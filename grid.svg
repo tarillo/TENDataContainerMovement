@@ -1,0 +1,196 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='1400' height='1200'>
+<rect width='100%' height='100%' fill='white'/>
+<text x='100' y='100' dominant-baseline='middle' text-anchor='left' font-size='20'>Move piece from here to here</text>
+<rect x='100' y='300' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='150' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='300' width='100' height='100' fill='white' stroke='black'/>
+<text x='250' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='300' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='350' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='300' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='450' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='300' width='100' height='100' fill='white' stroke='black'/>
+<text x='550' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='300' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='650' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='300' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='750' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='300' width='100' height='100' fill='white' stroke='black'/>
+<text x='850' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='300' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='950' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='300' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='1050' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='300' width='100' height='100' fill='white' stroke='black'/>
+<text x='1150' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='300' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='1250' y='350' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='100' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='150' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='400' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='250' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='350' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='450' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='400' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='550' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='650' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='750' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='400' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='850' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='950' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='1050' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='400' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='1150' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='400' width='100' height='100' fill='white' stroke='black'/>
+<text x='1250' y='450' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='100' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='150' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='250' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='500' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='350' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='450' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='550' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='500' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='650' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='750' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='850' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='500' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='950' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='1050' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='500' width='100' height='100' fill='white' stroke='black'/>
+<text x='1150' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='500' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='1250' y='550' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='100' y='600' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='150' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='600' width='100' height='100' fill='white' stroke='black'/>
+<text x='250' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='600' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='350' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='600' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='450' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='600' width='100' height='100' fill='white' stroke='black'/>
+<text x='550' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='600' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='650' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='600' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='750' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='600' width='100' height='100' fill='white' stroke='black'/>
+<text x='850' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='600' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='950' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='600' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='1050' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='600' width='100' height='100' fill='white' stroke='black'/>
+<text x='1150' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='600' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='1250' y='650' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='100' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='150' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='700' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='250' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='350' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='450' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='700' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='550' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='650' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='750' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='700' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='850' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='950' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='1050' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='700' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='1150' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='700' width='100' height='100' fill='white' stroke='black'/>
+<text x='1250' y='750' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='100' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='150' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='250' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='800' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='350' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='450' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='550' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='800' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='650' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='750' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='850' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='800' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='950' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='1050' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='800' width='100' height='100' fill='white' stroke='black'/>
+<text x='1150' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='800' width='100' height='100' fill='#ffffcc' stroke='black'/>
+<text x='1250' y='850' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='100' y='900' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='150' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='900' width='100' height='100' fill='white' stroke='black'/>
+<text x='250' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='900' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='350' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='900' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='450' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='900' width='100' height='100' fill='white' stroke='black'/>
+<text x='550' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='900' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='650' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='900' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='750' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='900' width='100' height='100' fill='white' stroke='black'/>
+<text x='850' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='900' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='950' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='900' width='100' height='100' fill='#ffdddd' stroke='black'/>
+<text x='1050' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='900' width='100' height='100' fill='white' stroke='black'/>
+<text x='1150' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='900' width='100' height='100' fill='#ddffdd' stroke='black'/>
+<text x='1250' y='950' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='100' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='150' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='200' y='1000' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='250' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='300' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='350' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='400' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='450' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='500' y='1000' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='550' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='600' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='650' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='700' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='750' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='800' y='1000' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='850' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='900' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='950' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1000' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='1050' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1100' y='1000' width='100' height='100' fill='#ddddff' stroke='black'/>
+<text x='1150' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+<rect x='1200' y='1000' width='100' height='100' fill='white' stroke='black'/>
+<text x='1250' y='1050' dominant-baseline='middle' text-anchor='middle' font-size='20'>A</text>
+</svg>
