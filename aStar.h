@@ -96,8 +96,9 @@ Node* aStar::search(Tree* tree, Problem* problem) {
             int SourceColumn = action.first.second;
             int destinationRow = action.second.first;
             int destinationColumn = action.second.second;
-
-            string moveDesc = "Move (" + to_string(sourceRow) + "," + to_string(SourceColumn)+ ") -> (" + to_string(destinationRow) + "," + to_string(destinationColumn) + ")";
+            
+            // the string description of the move to make, with color coding for terminal
+            string moveDesc = "Move from \x1b[32m[" + to_string(sourceRow) + "," + to_string(SourceColumn)+ "]\x1b[0m to \x1b[31m[" + to_string(destinationRow) + "," + to_string(destinationColumn) + "]\x1b[0m";
 
             Node* child = new Node(newState, current, moveDesc, newCost, newHeuristic, destinationRow, destinationColumn);
 
