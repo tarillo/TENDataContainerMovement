@@ -25,38 +25,37 @@ void outputMainScreen() {
     file << "</svg>";
 }
 
-void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manifest, Node* currStep, pair<int,int> source, pair<int,int> dest, int rows, int cols, int cellSize) {
+void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manifest, stringstream& currStep, string& startCoords, string& endCoords, int rows, int cols, int cellSize) {
     std::ofstream file("grid.svg");
+    pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
+    pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
+
+    currStep << "Move from <tspan fill ='#00ff00'>[" << std::setw(2) << std::setfill('0') << source.first + 1 << "," << std::setw(2) << std::setfill('0') << source.second + 1 << "]</tspan> to "
+                << "<tspan fill ='#ff0000'>[" << std::setw(2) << std::setfill('0') << dest.first + 1 << "," << std::setw(2) << std::setfill('0') << dest.second + 1 << "]</tspan></text>\n";
+    
     file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
             << 1400 << "' height='" 
-            << 1200 << "'>\n";
+            << 1400 << "'>\n";
         file << "<rect width='100%' height='100%' fill='white'/>\n";
-        file << "<text x='" << 100
-                << "' y='" << 100
-                << "' dominant-baseline='middle' text-anchor='left' "
-                    "font-size='30'>"
-                << "Move from "
-                << "<tspan fill ='green'>[" << source.first << "," << source.second << "]</tspan> to "
-                << "<tspan fill ='red'>[" << dest.first << "," << dest.second << "]</tspan>"
-                << "</text>\n";
+        file << currStep.str();
         for (int r = 0; r < rows; r++) {
             file << "<text x='" << 150 
-                << "' y='" << 1050 - r * cellSize
+                << "' y='" << 1250 - r * cellSize
                 << "' dominant-baseline='middle' text-anchor='left' "
-                    "font-size='30'>"
-                << r
+                    "font-size='30'> "
+                << std::setw(2) << std::setfill('0') << r + 1
                 << "</text>\n";
             for (int c = 0; c < cols; c++) {
                 if (r == 0) {
                     file << "<text x='" << 250 + c * cellSize 
-                        << "' y='" << 1100
+                        << "' y='" << 1300
                         << "' dominant-baseline='middle' text-anchor='middle' "
                             "font-size='30'>"
-                        << c
+                        << std::setw(2) << std::setfill('0') << c + 1
                         << "</text>\n";
                 }
                 int x = 200 + c * cellSize;
-                int y = 1000 - r * cellSize;
+                int y = 1200 - r * cellSize;
 
                 // Draw rectangle
                 file << "<rect x='" << x 
@@ -78,6 +77,21 @@ void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manife
         }
         file << "</svg>";
 }
+
+void outputNewManifest(Manifest manifest, const string& filename) {
+    ofstream file(filename + "OUTBOUND.txt");
+
+    for (int i = 0; i < manifest.getContainerCount(); i++) {
+        Container box = manifest.getCurrContainer(i);
+        file << "[" << std::setw(2) << std::setfill('0') << box.x + 1 << "," << std::setw(2) << std::setfill('0') << box.y + 1 << "], "
+             << "{" << std::setw(5) << std::setfill('0') << box.weight << "}, "
+             << box.description << "\n";
+    }
+    file.close();
+
+}
+
+
 
 vector<vector<string>> vectorFormat(const vector<vector<int>> grid, Manifest& manifest, pair<int,int> source, pair<int,int> dest, Node* currStep) {
     vector<vector<string>> formattedManifest;
@@ -129,7 +143,7 @@ int main() {
         manifest.buildGrid();
 
         // display number of containers loaded
-        string shortManifestName = manifestFile.substr(0, manifestFile.find_last_of(".") + 1);
+        string shortManifestName = manifestFile.substr(0, manifestFile.find_last_of("."));
         cout <<  shortManifestName << " has " << manifest.getContainerCount() << " containers" << endl;
         cout << "Computing a solution..." << endl;
 
@@ -169,7 +183,12 @@ int main() {
 
         cout << "\nSteps in solution path:" << endl;
         Node* currNode = steps.at(0)->parent; // start from root
+        stringstream fullAction;
         for (int i = 0; i < (int)steps.size(); ++i) {
+            fullAction << "<text x='" << 100 << "' y='" << 100 + (i*40)
+                << "' dominant-baseline='middle' text-anchor='left' "
+                    "font-size='30'>";
+            fullAction << "Step " << i + 1 << " of " << steps.size() << ": ";
             cout << "Step: " << i + 1 << " of " << steps.size() << ": " << steps[i]->action << endl;
             cout << "Hit ENTER when done / Hit 'i' to add a note \n\n" << endl;
 
@@ -195,9 +214,8 @@ int main() {
             pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
             pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
 
-            cout << source.first << "," << source.second << " to " << dest.first << "," << dest.second << endl;
             vector<vector<string>> gridColors = vectorFormat(currNode->state, manifest, source, dest, steps[i]);
-            outputGridScreen(gridColors, manifest, steps[i], source, dest, 8, 12, 80);
+            outputGridScreen(gridColors, manifest, fullAction, startCoords, endCoords, 8, 12, 80);
             
             string noteOrContinue;
             getline(cin, noteOrContinue);
@@ -239,6 +257,7 @@ int main() {
 
         // add log of solution completion
         log.addLogEntry("Finished a Cycle. Manifest " + manifestFile + " was written to desktop, and a reminder pop-up to operator to send file was displayed.");
+        outputNewManifest(manifest, shortManifestName);
     }
 
     //implicitly should call destructor to save log before program ends
