@@ -42,7 +42,7 @@ private:
 
         // convert int time to readable person time
         #ifdef _WIN32 // for windows
-            localtime_s(&timeinfo, &present_time_t);                        
+        //    localtime_s(&timeinfo, &present_time_t);                        
         #else // if linux or macOS
             timeinfo = *localtime(&present_time_t); 
         #endif 

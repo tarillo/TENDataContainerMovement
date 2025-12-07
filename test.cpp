@@ -8,6 +8,98 @@
 #include "astar.h"
 #include "log.h"
 
+
+void outputMainScreen() {
+    std::ofstream file("grid.svg");
+
+    file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
+        << 1400 << "' height='" 
+        << 1200 << "'>\n";
+    file << "<rect width='100%' height='100%' fill='white'/>\n";
+    file << "<text x='" << 100
+            << "' y='" << 100
+            << "' dominant-baseline='middle' text-anchor='left' "
+                "font-size='40'>"
+            << "Enter a Manifest: "
+            << "</text>\n";
+    file << "</svg>";
+}
+
+void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manifest, Node* currStep, int rows, int cols, int cellSize) {
+    std::ofstream file("grid.svg");
+    file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
+            << 1400 << "' height='" 
+            << 1200 << "'>\n";
+        file << "<rect width='100%' height='100%' fill='white'/>\n";
+        file << "<text x='" << 100
+                << "' y='" << 100
+                << "' dominant-baseline='middle' text-anchor='left' "
+                    "font-size='30'>"
+                << currStep->action 
+                << "</text>\n";
+        for (int r = 0; r < rows; r++) {
+            file << "<text x='" << 150 
+                << "' y='" << 1050 - r * cellSize
+                << "' dominant-baseline='middle' text-anchor='left' "
+                    "font-size='30'>"
+                << r
+                << "</text>\n";
+            for (int c = 0; c < cols; c++) {
+                if (r == 0) {
+                    file << "<text x='" << 250 + c * cellSize 
+                        << "' y='" << 1100
+                        << "' dominant-baseline='middle' text-anchor='middle' "
+                            "font-size='30'>"
+                        << c
+                        << "</text>\n";
+                }
+                int x = 200 + c * cellSize;
+                int y = 1000 - r * cellSize;
+
+                // Draw rectangle
+                file << "<rect x='" << x 
+                    << "' y='" << y 
+                    << "' width='" << cellSize 
+                    << "' height='" << cellSize 
+                    << "' fill='" << gridColors[r][c] 
+                    << "' stroke='black'/>\n";
+                if(manifest.getCurrContainer(r*cols+c).description != "UNUSED" && manifest.getCurrContainer(r*cols+c).description != "NAN") {
+                // Draw text centered
+                file << "<text x='" << x + cellSize/2 
+                    << "' y='" << y + cellSize/2 
+                    << "' dominant-baseline='middle' text-anchor='middle' "
+                        "font-size='20'>"
+                    << manifest.getCurrContainer(r*cols+c).description.substr(0,4)
+                    << "</text>\n";
+                }
+            }
+        }
+        file << "</svg>";
+}
+
+vector<vector<string>> vectorFormat(const vector<vector<int>> grid, Manifest& manifest, Node* currStep) {
+    vector<vector<string>> formattedManifest;
+    for (int i = 0; i < grid.size(); i++) {
+        vector<string> formattedRow;
+        for (int j = 0; j < grid[i].size(); j++) {
+            int weightNum = grid[i][j];
+            if (weightNum == -1) {
+                formattedRow.push_back("#000000");
+            } else if (weightNum == 0 && manifest.grid[i][j]->isEmpty) {
+                formattedRow.push_back("#ffffff");
+            }
+            else {
+                formattedRow.push_back("#b0b060");
+            }
+        }
+        formattedManifest.push_back(formattedRow);
+    }
+    return formattedManifest;
+}
+
+/*
+
+*/
 using namespace std;
 
 int main() {
@@ -16,6 +108,7 @@ int main() {
     while(true) {               // loops to be able to process more than 1 manifest if wanted
         string manifestFile;
 
+        outputMainScreen();
         cout << "Enter a Manifest or type 'exit' to quit: ";
         getline(cin, manifestFile);
 
@@ -54,7 +147,7 @@ int main() {
 
         cout << "\nSolution has been found, it will take" << endl; cout << goal->cost << " move(s) \x1b[90m(not including from then to default crane location)\x1b[0m \n  " << goal->cost << " minutes \x1b[90m(not including from then to default crane location)\x1b[0m" << endl;
 
-        vector<string> steps = solver.getSolutionPath(goal);
+        vector<Node*> steps = solver.getSolutionPath(goal);
 
         cout << "   " << steps.size() << " move(s) \x1b[90m(not including from then to default crane location)\x1b[0m \n   " << goal->cost << " minutes \x1b[90m(not including from then to default crane location)\x1b[0m" << endl;
 
@@ -69,9 +162,12 @@ int main() {
         cin.ignore();
 
         cout << "\nSteps in solution path:" << endl;
+        Node* currNode = steps.at(0)->parent; // start from root
         for (int i = 0; i < (int)steps.size(); ++i) {
-            cout << "Step: " << i + 1 << " of " << steps.size() << ": " << steps[i] << endl;
+            cout << "Step: " << i + 1 << " of " << steps.size() << ": " << steps[i]->action << endl;
             cout << "Hit ENTER when done / Hit 'i' to add a note \n\n" << endl;
+            vector<vector<string>> gridColors = vectorFormat(currNode->state, manifest, steps[i]);
+            outputGridScreen(gridColors, manifest, steps[i], 8, 12, 80);
             
             string noteOrContinue;
             getline(cin, noteOrContinue);
@@ -89,7 +185,7 @@ int main() {
             }
 
             // removes color for log entry
-            string logEntry = steps[i];
+            string logEntry = steps[i]->action;
             size_t pos = 0;
             while ((pos = logEntry.find("\x1b[32m", pos)) != string::npos) {
                 logEntry.erase(pos, 5);
@@ -108,6 +204,7 @@ int main() {
             string endCoords = logEntry.substr(logEntry.rfind("[") , logEntry.rfind("]") - logEntry.rfind("[") + 1);;
 
             log.addLogEntry(startCoords + " was moved to " + endCoords);
+            currNode = steps[i];
         }
 
         // add log of solution completion

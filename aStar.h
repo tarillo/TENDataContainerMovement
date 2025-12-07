@@ -19,7 +19,7 @@ public:
     };
 
     Node* search(Tree* tree, Problem* problem);  //Main A* Search function
-    vector<string> getSolutionPath(Node* goal); //Reconstructs solution path from goal node back to start
+    vector<Node*> getSolutionPath(Node* goal); //Reconstructs solution path from goal node back to start
     vector<pair<vector<vector<int>>, int>> generate_successors(const Problem& prob, const vector<vector<int>>& state);
 };
 
@@ -98,7 +98,8 @@ Node* aStar::search(Tree* tree, Problem* problem) {
             int destinationColumn = action.second.second;
             
             // the string description of the move to make, with color coding for terminal
-            string moveDesc = "Move from \x1b[32m[" + to_string(sourceRow) + "," + to_string(SourceColumn)+ "]\x1b[0m to \x1b[31m[" + to_string(destinationRow) + "," + to_string(destinationColumn) + "]\x1b[0m";
+            //string moveDesc = "Move from \x1b[32m[" + to_string(sourceRow) + "," + to_string(SourceColumn)+ "]\x1b[0m to \x1b[31m[" + to_string(destinationRow) + "," + to_string(destinationColumn) + "]\x1b[0m";
+            string moveDesc = "Move from [" + to_string(sourceRow) + "," + to_string(SourceColumn)+ "] to [" + to_string(destinationRow) + "," + to_string(destinationColumn) + "]";
 
             Node* child = new Node(newState, current, moveDesc, newCost, newHeuristic, destinationRow, destinationColumn);
 
@@ -111,12 +112,12 @@ Node* aStar::search(Tree* tree, Problem* problem) {
     return bestNode;
 }
 
-vector<string> aStar::getSolutionPath(Node* goal) { //Returns sequence of actions from start node to the goal state
-    vector<string> steps;
+vector<Node*> aStar::getSolutionPath(Node* goal) { //Returns sequence of actions from start node to the goal state
+    vector<Node*> steps;
     Node* currNode = goal; //Starts from the goal
 
     while (currNode != nullptr && currNode->parent != nullptr) { //Traverse from goal node back to the root node
-        steps.push_back(currNode->action);
+        steps.push_back(currNode);
         currNode = currNode->parent;
     }
 
