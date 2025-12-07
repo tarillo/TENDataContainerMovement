@@ -13,8 +13,8 @@ void outputMainScreen() {
     std::ofstream file("grid.svg");
 
     file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
-        << 1400 << "' height='" 
-        << 1200 << "'>\n";
+        << 1600 << "' height='" 
+        << 1400 << "'>\n";
     file << "<rect width='100%' height='100%' fill='white'/>\n";
     file << "<text x='" << 100
             << "' y='" << 100
@@ -25,19 +25,23 @@ void outputMainScreen() {
     file << "</svg>";
 }
 
-void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manifest, stringstream& currStep, string& startCoords, string& endCoords, int rows, int cols, int cellSize) {
+void outputFirstScreen(const vector<vector<string>>& gridColors, Manifest& manifest, int rows, int cols, int cellSize) {
     std::ofstream file("grid.svg");
-    pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
-    pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
-
-    currStep << "Move from <tspan fill ='#00ff00'>[" << std::setw(2) << std::setfill('0') << source.first + 1 << "," << std::setw(2) << std::setfill('0') << source.second + 1 << "]</tspan> to "
-                << "<tspan fill ='#ff0000'>[" << std::setw(2) << std::setfill('0') << dest.first + 1 << "," << std::setw(2) << std::setfill('0') << dest.second + 1 << "]</tspan></text>\n";
-    
     file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
-            << 1400 << "' height='" 
+            << 1600 << "' height='" 
             << 1400 << "'>\n";
         file << "<rect width='100%' height='100%' fill='white'/>\n";
-        file << currStep.str();
+        file << "<text x='" << 100
+                        << "' y='" << 100
+                        << "' dominant-baseline='middle' text-anchor='left' "
+                            "font-size='40'>" << "Enter when ready" << "</text>\n";
+        file << "<rect x='" << 200
+                    << "' y='" << 400 
+                    << "' width='" << cellSize 
+                    << "' height='" << cellSize 
+                    << "' fill='" << "#00ae00"
+                    << "' stroke='black'/>\n";
+
         for (int r = 0; r < rows; r++) {
             file << "<text x='" << 150 
                 << "' y='" << 1250 - r * cellSize
@@ -48,7 +52,7 @@ void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manife
             for (int c = 0; c < cols; c++) {
                 if (r == 0) {
                     file << "<text x='" << 250 + c * cellSize 
-                        << "' y='" << 1300
+                        << "' y='" << 1350
                         << "' dominant-baseline='middle' text-anchor='middle' "
                             "font-size='30'>"
                         << std::setw(2) << std::setfill('0') << c + 1
@@ -69,7 +73,59 @@ void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manife
                 file << "<text x='" << x + cellSize/2 
                     << "' y='" << y + cellSize/2 
                     << "' dominant-baseline='middle' text-anchor='middle' "
-                        "font-size='20'>"
+                        "font-size='30'>"
+                    << manifest.getCurrContainer(r*cols+c).description.substr(0,4)
+                    << "</text>\n";
+                }
+            }
+        }
+        file << "</svg>";
+}
+
+void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manifest, stringstream& currStep, string& startCoords, string& endCoords, int rows, int cols, int cellSize) {
+    std::ofstream file("grid.svg");
+        pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
+        pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
+
+        currStep << "Move from <tspan fill ='#00ae00'>[" << std::setw(2) << std::setfill('0') << source.first + 1 << "," << std::setw(2) << std::setfill('0') << source.second + 1 << "]</tspan> to "
+                    << "<tspan fill ='#ff0000'>[" << std::setw(2) << std::setfill('0') << dest.first + 1 << "," << std::setw(2) << std::setfill('0') << dest.second + 1 << "]</tspan></text>\n";
+    file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
+            << 1600 << "' height='" 
+            << 1400 << "'>\n";
+        file << "<rect width='100%' height='100%' fill='white'/>\n";
+        file << currStep.str();
+        for (int r = 0; r < rows; r++) {
+            file << "<text x='" << 150 
+                << "' y='" << 1250 - r * cellSize
+                << "' dominant-baseline='middle' text-anchor='left' "
+                    "font-size='30'> "
+                << std::setw(2) << std::setfill('0') << r + 1
+                << "</text>\n";
+            for (int c = 0; c < cols; c++) {
+                if (r == 0) {
+                    file << "<text x='" << 250 + c * cellSize 
+                        << "' y='" << 1350
+                        << "' dominant-baseline='middle' text-anchor='middle' "
+                            "font-size='30'>"
+                        << std::setw(2) << std::setfill('0') << c + 1
+                        << "</text>\n";
+                }
+                int x = 200 + c * cellSize;
+                int y = 1200 - r * cellSize;
+
+                // Draw rectangle
+                file << "<rect x='" << x 
+                    << "' y='" << y 
+                    << "' width='" << cellSize 
+                    << "' height='" << cellSize 
+                    << "' fill='" << gridColors[r][c] 
+                    << "' stroke='black'/>\n";
+                if(manifest.getCurrContainer(r*cols+c).description != "UNUSED" && manifest.getCurrContainer(r*cols+c).description != "NAN") {
+                // Draw text centered
+                file << "<text x='" << x + cellSize/2 
+                    << "' y='" << y + cellSize/2 
+                    << "' dominant-baseline='middle' text-anchor='middle' "
+                        "font-size='30'>"
                     << manifest.getCurrContainer(r*cols+c).description.substr(0,4)
                     << "</text>\n";
                 }
@@ -102,7 +158,7 @@ vector<vector<string>> vectorFormat(const vector<vector<int>> grid, Manifest& ma
             if (weightNum == -1) {
                 formattedRow.push_back("#000000");
             } else if (i == source.first && j == source.second) {
-                formattedRow.push_back("#00ff00");
+                formattedRow.push_back("#00ae00");
             } else if (i == dest.first && j == dest.second) {
                 formattedRow.push_back("#ff0000");
             } else if (weightNum == 0 && manifest.grid[i][j]->isEmpty) {
@@ -179,10 +235,16 @@ int main() {
         log.addLogEntry("Balance solution found, it will require " + to_string(steps.size()) + " moves/" + to_string(goal->cost) + " minutes.");
 
         cout << "Hit ENTER when ready for first move" << endl;
+        Node* currNode = steps.at(0)->parent; // start from root
+        pair<int,int> initialSource = {9, 1};
+        pair<int,int> initialDest = {-1, -1};
+        vector<vector<string>> gridColors = vectorFormat(currNode->state, manifest, initialSource, initialDest, steps[0]);
+        outputFirstScreen(gridColors, manifest, 8, 12, 100);
+
         cin.ignore();
 
         cout << "\nSteps in solution path:" << endl;
-        Node* currNode = steps.at(0)->parent; // start from root
+
         stringstream fullAction;
         for (int i = 0; i < (int)steps.size(); ++i) {
             fullAction << "<text x='" << 100 << "' y='" << 100 + (i*40)
@@ -197,7 +259,7 @@ int main() {
             size_t pos = 0;
             while ((pos = logEntry.find("\x1b[32m", pos)) != string::npos) {
                 logEntry.erase(pos, 5);
-            }
+            }   
             pos = 0;
             while ((pos = logEntry.find("\x1b[31m", pos)) != string::npos) {
                 logEntry.erase(pos, 5);
@@ -215,7 +277,7 @@ int main() {
             pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
 
             vector<vector<string>> gridColors = vectorFormat(currNode->state, manifest, source, dest, steps[i]);
-            outputGridScreen(gridColors, manifest, fullAction, startCoords, endCoords, 8, 12, 80);
+            outputGridScreen(gridColors, manifest, fullAction, startCoords, endCoords, 8, 12, 100);
             
             string noteOrContinue;
             getline(cin, noteOrContinue);

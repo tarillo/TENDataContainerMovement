@@ -36,6 +36,7 @@ public:
     Container getCurrContainer(int index) { return containers[index]; } // returns container at specified index
     vector<pair<int,int>> movable_boxes();
     vector<vector<int>> grid_to_vector() const;
+    vector<Container> getContainers() const { return containers; };
 };
 
 void Manifest::loadManifest(const string& filename) {                       //getting the data from the manifest file
