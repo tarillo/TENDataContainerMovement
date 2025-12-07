@@ -1,4 +1,125 @@
 <svg xmlns='http://www.w3.org/2000/svg' width='1400' height='1200'>
 <rect width='100%' height='100%' fill='white'/>
-<text x='100' y='100' dominant-baseline='middle' text-anchor='left' font-size='40'>Enter a Manifest: </text>
+<text x='100' y='100' dominant-baseline='middle' text-anchor='left' font-size='30'>Move from <tspan fill ='green'>[1,4]</tspan> to <tspan fill ='red'>[0,6]</tspan></text>
+<text x='150' y='1050' dominant-baseline='middle' text-anchor='left' font-size='30'>0</text>
+<text x='250' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>0</text>
+<rect x='200' y='1000' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='330' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>1</text>
+<rect x='280' y='1000' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='410' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>2</text>
+<rect x='360' y='1000' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='490' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>3</text>
+<rect x='440' y='1000' width='80' height='80' fill='#b0b060' stroke='black'/>
+<text x='480' y='1040' dominant-baseline='middle' text-anchor='middle' font-size='20'>bike</text>
+<text x='570' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>4</text>
+<rect x='520' y='1000' width='80' height='80' fill='#b0b060' stroke='black'/>
+<text x='560' y='1040' dominant-baseline='middle' text-anchor='middle' font-size='20'>Cate</text>
+<text x='650' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>5</text>
+<rect x='600' y='1000' width='80' height='80' fill='#ffffff' stroke='black'/>
+<text x='730' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>6</text>
+<rect x='680' y='1000' width='80' height='80' fill='#ff0000' stroke='black'/>
+<text x='810' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>7</text>
+<rect x='760' y='1000' width='80' height='80' fill='#ffffff' stroke='black'/>
+<text x='890' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>8</text>
+<rect x='840' y='1000' width='80' height='80' fill='#ffffff' stroke='black'/>
+<text x='970' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>9</text>
+<rect x='920' y='1000' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='1050' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>10</text>
+<rect x='1000' y='1000' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='1130' y='1100' dominant-baseline='middle' text-anchor='middle' font-size='30'>11</text>
+<rect x='1080' y='1000' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='150' y='970' dominant-baseline='middle' text-anchor='left' font-size='30'>1</text>
+<rect x='200' y='920' width='80' height='80' fill='#000000' stroke='black'/>
+<rect x='280' y='920' width='80' height='80' fill='#000000' stroke='black'/>
+<rect x='360' y='920' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='440' y='920' width='80' height='80' fill='#b0b060' stroke='black'/>
+<text x='480' y='960' dominant-baseline='middle' text-anchor='middle' font-size='20'>mote</text>
+<rect x='520' y='920' width='80' height='80' fill='#00ff00' stroke='black'/>
+<text x='560' y='960' dominant-baseline='middle' text-anchor='middle' font-size='20'>cars</text>
+<rect x='600' y='920' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='680' y='920' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='760' y='920' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='840' y='920' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='920' y='920' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1000' y='920' width='80' height='80' fill='#000000' stroke='black'/>
+<rect x='1080' y='920' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='150' y='890' dominant-baseline='middle' text-anchor='left' font-size='30'>2</text>
+<rect x='200' y='840' width='80' height='80' fill='#000000' stroke='black'/>
+<rect x='280' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='360' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='440' y='840' width='80' height='80' fill='#b0b060' stroke='black'/>
+<text x='480' y='880' dominant-baseline='middle' text-anchor='middle' font-size='20'>chip</text>
+<rect x='520' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='600' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='680' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='760' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='840' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='920' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1000' y='840' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1080' y='840' width='80' height='80' fill='#000000' stroke='black'/>
+<text x='150' y='810' dominant-baseline='middle' text-anchor='left' font-size='30'>3</text>
+<rect x='200' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='280' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='360' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='440' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='520' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='600' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='680' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='760' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='840' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='920' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1000' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1080' y='760' width='80' height='80' fill='#ffffff' stroke='black'/>
+<text x='150' y='730' dominant-baseline='middle' text-anchor='left' font-size='30'>4</text>
+<rect x='200' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='280' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='360' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='440' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='520' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='600' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='680' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='760' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='840' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='920' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1000' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1080' y='680' width='80' height='80' fill='#ffffff' stroke='black'/>
+<text x='150' y='650' dominant-baseline='middle' text-anchor='left' font-size='30'>5</text>
+<rect x='200' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='280' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='360' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='440' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='520' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='600' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='680' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='760' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='840' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='920' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1000' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1080' y='600' width='80' height='80' fill='#ffffff' stroke='black'/>
+<text x='150' y='570' dominant-baseline='middle' text-anchor='left' font-size='30'>6</text>
+<rect x='200' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='280' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='360' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='440' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='520' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='600' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='680' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='760' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='840' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='920' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1000' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1080' y='520' width='80' height='80' fill='#ffffff' stroke='black'/>
+<text x='150' y='490' dominant-baseline='middle' text-anchor='left' font-size='30'>7</text>
+<rect x='200' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='280' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='360' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='440' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='520' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='600' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='680' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='760' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='840' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='920' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1000' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
+<rect x='1080' y='440' width='80' height='80' fill='#ffffff' stroke='black'/>
 </svg>

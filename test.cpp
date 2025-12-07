@@ -25,7 +25,7 @@ void outputMainScreen() {
     file << "</svg>";
 }
 
-void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manifest, Node* currStep, int rows, int cols, int cellSize) {
+void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manifest, Node* currStep, pair<int,int> source, pair<int,int> dest, int rows, int cols, int cellSize) {
     std::ofstream file("grid.svg");
     file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
             << 1400 << "' height='" 
@@ -35,7 +35,9 @@ void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manife
                 << "' y='" << 100
                 << "' dominant-baseline='middle' text-anchor='left' "
                     "font-size='30'>"
-                << currStep->action 
+                << "Move from "
+                << "<tspan fill ='green'>[" << source.first << "," << source.second << "]</tspan> to "
+                << "<tspan fill ='red'>[" << dest.first << "," << dest.second << "]</tspan>"
                 << "</text>\n";
         for (int r = 0; r < rows; r++) {
             file << "<text x='" << 150 
@@ -77,7 +79,7 @@ void outputGridScreen(const vector<vector<string>>& gridColors, Manifest& manife
         file << "</svg>";
 }
 
-vector<vector<string>> vectorFormat(const vector<vector<int>> grid, Manifest& manifest, Node* currStep) {
+vector<vector<string>> vectorFormat(const vector<vector<int>> grid, Manifest& manifest, pair<int,int> source, pair<int,int> dest, Node* currStep) {
     vector<vector<string>> formattedManifest;
     for (int i = 0; i < grid.size(); i++) {
         vector<string> formattedRow;
@@ -85,6 +87,10 @@ vector<vector<string>> vectorFormat(const vector<vector<int>> grid, Manifest& ma
             int weightNum = grid[i][j];
             if (weightNum == -1) {
                 formattedRow.push_back("#000000");
+            } else if (i == source.first && j == source.second) {
+                formattedRow.push_back("#00ff00");
+            } else if (i == dest.first && j == dest.second) {
+                formattedRow.push_back("#ff0000");
             } else if (weightNum == 0 && manifest.grid[i][j]->isEmpty) {
                 formattedRow.push_back("#ffffff");
             }
@@ -166,23 +172,6 @@ int main() {
         for (int i = 0; i < (int)steps.size(); ++i) {
             cout << "Step: " << i + 1 << " of " << steps.size() << ": " << steps[i]->action << endl;
             cout << "Hit ENTER when done / Hit 'i' to add a note \n\n" << endl;
-            vector<vector<string>> gridColors = vectorFormat(currNode->state, manifest, steps[i]);
-            outputGridScreen(gridColors, manifest, steps[i], 8, 12, 80);
-            
-            string noteOrContinue;
-            getline(cin, noteOrContinue);
-
-            // add option to add a note to log between moves if desired
-            if (noteOrContinue == "i" || noteOrContinue == "I") {
-                cout << "Enter your note: ";
-                string note;
-                getline(cin, note);
-                log.writeNote(note);
-
-                cout << "Note added to log." << endl;
-                cout << "Hit ENTER when done \n\n" << endl;
-                cin.ignore();
-            }
 
             // removes color for log entry
             string logEntry = steps[i]->action;
@@ -202,6 +191,47 @@ int main() {
             //grab start coords and destination coords for log
             string startCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);;
             string endCoords = logEntry.substr(logEntry.rfind("[") , logEntry.rfind("]") - logEntry.rfind("[") + 1);;
+
+            pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
+            pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
+
+            cout << source.first << "," << source.second << " to " << dest.first << "," << dest.second << endl;
+            vector<vector<string>> gridColors = vectorFormat(currNode->state, manifest, source, dest, steps[i]);
+            outputGridScreen(gridColors, manifest, steps[i], source, dest, 8, 12, 80);
+            
+            string noteOrContinue;
+            getline(cin, noteOrContinue);
+
+            // add option to add a note to log between moves if desired
+            if (noteOrContinue == "i" || noteOrContinue == "I") {
+                cout << "Enter your note: ";
+                string note;
+                getline(cin, note);
+                log.writeNote(note);
+
+                cout << "Note added to log." << endl;
+                cout << "Hit ENTER when done \n\n" << endl;
+                cin.ignore();
+            }
+
+            // removes color for log entry
+            // string logEntry = steps[i]->action;
+            // size_t pos = 0;
+            // while ((pos = logEntry.find("\x1b[32m", pos)) != string::npos) {
+            //     logEntry.erase(pos, 5);
+            // }
+            // pos = 0;
+            // while ((pos = logEntry.find("\x1b[31m", pos)) != string::npos) {
+            //     logEntry.erase(pos, 5);
+            // }
+            // pos = 0;
+            // while ((pos = logEntry.find("\x1b[0m", pos)) != string::npos) {
+            //     logEntry.erase(pos, 4);
+            // }
+
+            // //grab start coords and destination coords for log
+            // string startCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);;
+            // string endCoords = logEntry.substr(logEntry.rfind("[") , logEntry.rfind("]") - logEntry.rfind("[") + 1);;
 
             log.addLogEntry(startCoords + " was moved to " + endCoords);
             currNode = steps[i];
