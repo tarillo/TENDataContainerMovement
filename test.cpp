@@ -414,10 +414,10 @@ int main() {
             string startCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);;
             string endCoords = logEntry.substr(logEntry.rfind("[") , logEntry.rfind("]") - logEntry.rfind("[") + 1);;
 
-            pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)) - 1,
-                                   stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1)) - 1};
-            pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)) - 1,
-                                 stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1)) - 1};
+            pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)),
+                                   stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
+            pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)),
+                                 stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
 
             vector<vector<string>> gridColors = vectorFormat(currNode->state, source, dest);
             outputGridScreen(gridColors, currNode->state, fullAction, startCoords, endCoords, 8, 12, 100, (i*2)+2);
@@ -497,10 +497,10 @@ int main() {
 
                 string nextStartCoords = endCoords;
                 string nextEndCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);
-                pair<int,int> source = {stoi(nextStartCoords.substr(1, nextStartCoords.find(",") - 1)) - 1,
-                                       stoi(nextStartCoords.substr(nextStartCoords.find(",") + 1, nextStartCoords.find("]") - nextStartCoords.find(",") - 1)) - 1};
-                pair<int,int> dest = {stoi(nextEndCoords.substr(1, nextEndCoords.find(",") - 1)) - 1,
-                                     stoi(nextEndCoords.substr(nextEndCoords.find(",") + 1, nextEndCoords.find("]") - nextEndCoords.find(",") - 1)) - 1};
+                pair<int,int> source = {stoi(nextStartCoords.substr(1, nextStartCoords.find(",") - 1)),
+                                       stoi(nextStartCoords.substr(nextStartCoords.find(",") + 1, nextStartCoords.find("]") - nextStartCoords.find(",") - 1))};
+                pair<int,int> dest = {stoi(nextEndCoords.substr(1, nextEndCoords.find(",") - 1)),
+                                     stoi(nextEndCoords.substr(nextEndCoords.find(",") + 1, nextEndCoords.find("]") - nextEndCoords.find(",") - 1))};
 
                 vector<vector<string>> gridColors = vectorFormat(currNode->state, source, dest);
                 outputGridScreen(gridColors, currNode->state, fullAction, nextStartCoords, nextEndCoords, 8, 12, 100, (i*2)+3);
