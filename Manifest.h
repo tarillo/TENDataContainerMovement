@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cctype>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -32,16 +33,17 @@ public:
     void loadManifest(const string& filename);
     void buildGrid();
     void clearContainers() { containers.clear(); }
-    int getContainerCount() { return containers.size(); } // returns number of containers in manifest (will be used for log)
+    int getContainerCount() const;
 
     vector<pair<int,int>> movable_boxes();
     vector<vector<int>> grid_to_vector() const;
+    void writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations) ; // writes the current manifest to a file
 };
 
 void Manifest::loadManifest(const string& filename) {                       //getting the data from the manifest file
     ifstream inFS(filename);
 
-    if (!inFS.is_open()) {                                                  //error handling for file
+    if (!inFS.is_open()) {                                                  //ERROR handling for file
         cout << "Error: Cannot open Manifest file: " << filename << endl;
         exit(1);
     }
@@ -68,6 +70,7 @@ void Manifest::loadManifest(const string& filename) {                       //ge
         size_t weightEnd = line.find('}', weightStart);
         size_t descStart = line.find("},", weightEnd);
 
+        // ERROR handling for malformed lines
          if (rowStart == string::npos || comma == string::npos || rowEnd == string::npos || weightStart == string::npos || weightEnd == string::npos || descStart == string::npos) {
             cout << "Warning: malformed line " << lineNumber << endl;
             continue;
@@ -75,9 +78,11 @@ void Manifest::loadManifest(const string& filename) {                       //ge
 
         Container box;
 
+        // 
         string rowStr = line.substr(rowStart + 1, comma - (rowStart + 1));
         string colStr = line.substr(comma + 1, rowEnd - (comma + 1));
 
+        // Clears leading/trailing whitespace
         auto trim = [](string &s) {
             size_t a = 0;
             while (a < s.size() && isspace((unsigned char)s[a])) a++;
@@ -85,6 +90,7 @@ void Manifest::loadManifest(const string& filename) {                       //ge
             while (b > a && isspace((unsigned char)s[b-1])) b--;
             s = s.substr(a, b - a);
         };
+
         trim(rowStr);
         trim(colStr);
 
@@ -92,18 +98,19 @@ void Manifest::loadManifest(const string& filename) {                       //ge
             box.x = stoi(rowStr) - 1;  //Changes row/column value to index value (1 --> 0)
             box.y = stoi(colStr) - 1;  //Stoi used to convert string "01" to integer 1
         }
-        catch (...) { //If any errors occur when trying to change the string to an integer this catch will output a warning
+        catch (...) { // ERROR handling if any errors occur when trying to change the string to an integer this catch will output a warning
             cout << "Warning: bad coordinates line " << lineNumber << endl; 
             continue;
         }
 
+        // Extract weight
         string weightStr = line.substr(weightStart + 1, weightEnd - (weightStart + 1));
         trim(weightStr);
 
         int weightValue = 0;
         bool weightValid = true; //Tells us if the weight we read from file is valid (only non-negative digits)
 
-        
+        // Validate weight string
         string digits = "";
         for (int i = 0; i < weightStr.length(); i++){ //iterates through each character in the weight
             char c = weightStr[i];
@@ -111,6 +118,8 @@ void Manifest::loadManifest(const string& filename) {                       //ge
                 digits.push_back(c);
             }   
         }
+        
+        // ERROR handling for invalid weight strings
         if (digits.empty()) {
             weightValid = false;
         } else {
@@ -121,7 +130,7 @@ void Manifest::loadManifest(const string& filename) {                       //ge
             }
         }
         
-
+        // Extract description
         string description = line.substr(descStart + 3); //Extract our description of what is in the container
         trim(description);
 
@@ -163,6 +172,17 @@ void Manifest::buildGrid() {
             grid[box.x][box.y] = &box;    // store a pointer to the container in the grid
         }
     }
+}
+
+int Manifest::getContainerCount() const {
+    // get number of containers in manifest, NOT unused or NAN
+    int count = 0;
+    for (const auto& box : containers) {
+        if (!box.isEmpty && !box.isIllegal) {
+            count++;
+        }
+    }
+    return count;
 }
 
 vector<pair<int,int>> Manifest::movable_boxes() { //To prevent moving boxes from under another box
@@ -214,6 +234,74 @@ vector<vector<int>> Manifest::grid_to_vector() const {
         }
     }
     return result;
+}
+
+void Manifest::writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations) {
+    ofstream outFS(filename);
+
+    if (!outFS.is_open()) {
+        cout << "Error: Cannot open file for writing: " << filename << endl;
+        return;
+    }
+
+    // Track which positions were written to avoid duplicates
+    vector<vector<bool>> written(8, vector<bool>(12, false));
+
+    // First pass: write all original positions with updated weights
+    for (int i = 0; i < containers.size(); i++) {
+        Container& box = containers[i];
+        int row = box.x;
+        int col = box.y;
+        
+        outFS << "[" << setfill('0') << setw(2) << (row + 1) << ","
+              << setw(2) << (col + 1) << "] ";
+        
+        int updatedWeight = updatedLocations[row][col];
+        
+        if (updatedWeight == 0) {
+            outFS << "{0} ,UNUSED" << endl;
+        } else if (updatedWeight == -1) {
+            outFS << "{0} ,NAN" << endl;
+        } else {
+            outFS << "{" << updatedWeight << "} ," << box.description << endl;
+        }
+        
+        written[row][col] = true;
+    }
+    
+    // Second pass: write new positions (containers that moved)
+    // Match containers to their new positions by finding where their weight ended up
+    for (int i = 0; i < containers.size(); i++) {
+        Container& box = containers[i];
+        int origRow = box.x;
+        int origCol = box.y;
+        int weight = box.weight;
+        
+        // Skip UNUSED, NAN, or empty containers
+        if (weight <= 0) continue;
+        
+        // If the weight is still at original position, skip (not moved)
+        if (updatedLocations[origRow][origCol] == weight) continue;
+        
+        // Find where this container's weight moved to
+        for (int row = 0; row < 8; ++row) {
+            for (int col = 0; col < 12; ++col) {
+                if (written[row][col]) continue; // Already written
+                
+                if (updatedLocations[row][col] == weight) {
+                    // Found the new position of this container
+                    outFS << "[" << setfill('0') << setw(2) << (row + 1) << ","
+                          << setw(2) << (col + 1) << "] ";
+                    outFS << "{" << weight << "} ," << box.description << endl;
+                    
+                    written[row][col] = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    outFS.close();
 }
 
 #endif
