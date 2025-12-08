@@ -79,26 +79,26 @@ void outputFirstScreen(const vector<vector<string>>& gridColors, vector<vector<C
         file << "</svg>";
 }
 
-void outputGridScreen(const vector<vector<string>>& gridColors, vector<vector<Container>> grid, stringstream& currStep, string startCoords, string& endCoords, int rows, int cols, int cellSize) {
+void outputGridScreen(const vector<vector<string>>& gridColors, vector<vector<Container>> grid, stringstream& currStep, string startCoords, string& endCoords, int rows, int cols, int cellSize, int visualEndRow) {
     std::ofstream file("grid.svg");
     
     if(startCoords != "park" && endCoords != "park") {
         pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
         pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
     
-        currStep << "Move from <tspan fill ='#00ae00'>[" << std::setw(2) << std::setfill('0') << source.first + 1 << "," << std::setw(2) << std::setfill('0') << source.second + 1 << "]</tspan> to "
-                    << "<tspan fill ='#ff0000'>[" << std::setw(2) << std::setfill('0') << dest.first + 1 << "," << std::setw(2) << std::setfill('0') << dest.second + 1 << "]</tspan></text>\n";
+        currStep << "Move from <tspan fill ='#00ae00'>[" << std::setw(2) << std::setfill('0') << source.first << "," << std::setw(2) << std::setfill('0') << source.second << "]</tspan> to "
+                    << "<tspan fill ='#ff0000'>[" << std::setw(2) << std::setfill('0') << dest.first << "," << std::setw(2) << std::setfill('0') << dest.second << "]</tspan></text>\n";
     }
     else if(startCoords == "park") {
         pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
     
         currStep << "Move from <tspan fill ='#00ae00'>" << startCoords << "</tspan> to "
-                    << "<tspan fill ='#ff0000'>[" << std::setw(2) << std::setfill('0') << dest.first + 1 << "," << std::setw(2) << std::setfill('0') << dest.second + 1 << "]</tspan></text>\n";
+                    << "<tspan fill ='#ff0000'>[" << std::setw(2) << std::setfill('0') << dest.first << "," << std::setw(2) << std::setfill('0') << dest.second << "]</tspan></text>\n";
     }
     else {
         pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
     
-        currStep << "Move from <tspan fill ='#00ae00'>[" << std::setw(2) << std::setfill('0') << source.first + 1 << "," << std::setw(2) << std::setfill('0') << source.second + 1 << "]</tspan> to "
+        currStep << "Move from <tspan fill ='#00ae00'>[" << std::setw(2) << std::setfill('0') << source.first << "," << std::setw(2) << std::setfill('0') << source.second << "]</tspan> to "
                     << "<tspan fill ='#ff0000'>" << endCoords << "</tspan></text>\n";
     }
 
@@ -181,7 +181,7 @@ void outputNewManifest(vector<vector<Container>> grid, const string& filename) {
 
 
 
-vector<vector<string>> vectorFormat(const vector<vector<Container>> grid, pair<int,int> source, pair<int,int> dest, Node* currStep) {
+vector<vector<string>> vectorFormat(const vector<vector<Container>> grid, pair<int,int> source, pair<int,int> dest) {
     vector<vector<string>> formattedManifest;
 
     for (int i = 0; i < grid.size(); i++) {
@@ -190,9 +190,9 @@ vector<vector<string>> vectorFormat(const vector<vector<Container>> grid, pair<i
             int weightNum = grid[i][j].weight;
             if (weightNum == -1 || grid[i][j].isIllegal) {
                 formattedRow.push_back("#000000");
-            } else if (i == source.first && j == source.second) {
+            } else if (i+1 == source.first && j+1 == source.second) {
                 formattedRow.push_back("#00ae00");
-            } else if (i == dest.first && j == dest.second) {
+            } else if (i+1 == dest.first && j+1 == dest.second) {
                 formattedRow.push_back("#ff0000");
             } else if (weightNum == 0 && grid[i][j].isEmpty) {
                 formattedRow.push_back("#ffffff");
@@ -247,6 +247,26 @@ int main() {
         Tree tree(&problem);
         aStar::SearchStats stats;
 
+        Node* root = tree.root;
+        pair<int,int> initialSource = {9, 1};
+        string initialSourceStr = "park";
+        pair<int,int> initialDest = {-1, -1};
+        stringstream solveWait;
+        solveWait << "<text x='" << 100
+                    << "' y='" << 100
+                    << "' dominant-baseline='middle' text-anchor='left' "
+                        "font-size='40'>"; 
+        solveWait << "Manifest " << manifestFile << " is opened, there are " << to_string(manifest.getContainerCount()) << " containers on the ship.</text>";
+        solveWait << "<text x='" << 100
+                    << "' y='" << 150
+                    << "' dominant-baseline='middle' text-anchor='left' "
+                        "font-size='40'>"; 
+        solveWait << "Computing a solution...</text>";
+
+        vector<vector<string>> gridColors = vectorFormat(root->state, initialSource, initialDest);
+        outputFirstScreen(gridColors, root->state, solveWait, 8, 12, 100);
+
+
         aStar solver;
         cout << "Starting A*..." << endl;
         Node* goal = solver.search(&tree, &problem, stats);
@@ -281,61 +301,91 @@ int main() {
         log.addLogEntry("Balance solution found, it will require " + to_string(steps.size()) + " moves/" + to_string(goal->cost) + " minutes.");
 
         cout << "Hit ENTER when ready for first move" << endl;
-        Node* currNode = steps.at(0)->parent; // start from root
-        pair<int,int> initialSource = {9, 1};
-        string initialSourceStr = "park";
-        pair<int,int> initialDest = {-1, -1};
-        stringstream introText;
-        vector<vector<string>> gridColors = vectorFormat(currNode->state, initialSource, initialDest, steps[0]);
-        introText << "<text x='" << 100
-                    << "' y='" << 100
-                    << "' dominant-baseline='middle' text-anchor='left' "
-                        "font-size='40'>"; 
-        introText << "Solution has been found, it will take " << "</text>\n"; 
-        introText << "<text x='" << 100
-                    << "' y='" << 150
-                    << "' dominant-baseline='middle' text-anchor='left' "
-                        "font-size='40'>"; 
-        introText   << steps.size() << " move(s) (not including from then to default crane location)  " << "</text>\n";
-        introText << "<text x='" << 100
-                    << "' y='" << 200
-                    << "' dominant-baseline='middle' text-anchor='left' "
-                        "font-size='40'>"; 
-        introText << "   " << goal->cost << " minutes (not including from then to default crane location) " << "</text>\n";
-        introText << "<text x='" << 100
-                    << "' y='" << 250
-                    << "' dominant-baseline='middle' text-anchor='left' "
-                        "font-size='40'>"; 
-        introText << "Hit ENTER when ready for first move" << "</text>\n";
-
-        outputFirstScreen(gridColors, currNode->state, introText, 8, 12, 100);
-
-        cin.ignore();
-
-        cout << "\nSteps in solution path:" << endl;
-
         stringstream fullAction;
+        Node* currNode;
+        if(steps.size() != 0) {
+            currNode = steps.at(0)->parent; // start from root
+            stringstream introText;
+            gridColors = vectorFormat(currNode->state, initialSource, initialDest);
+            introText << "<text x='" << 100
+                        << "' y='" << 100
+                        << "' dominant-baseline='middle' text-anchor='left' "
+                            "font-size='40'>"; 
+            introText << "Solution has been found, it will take " << "</text>\n"; 
+            introText << "<text x='" << 100
+                        << "' y='" << 150
+                        << "' dominant-baseline='middle' text-anchor='left' "
+                            "font-size='40'>"; 
+            introText   << steps.size() << " move(s) (not including from then to default crane location)  " << "</text>\n";
+            introText << "<text x='" << 100
+                        << "' y='" << 200
+                        << "' dominant-baseline='middle' text-anchor='left' "
+                            "font-size='40'>"; 
+            introText << "   " << goal->cost << " minutes (not including from then to default crane location) " << "</text>\n";
+            introText << "<text x='" << 100
+                        << "' y='" << 250
+                        << "' dominant-baseline='middle' text-anchor='left' "
+                            "font-size='40'>"; 
+            introText << "Hit ENTER when ready for first move" << "</text>\n";
 
+            outputFirstScreen(gridColors, currNode->state, introText, 8, 12, 100);
+
+            cin.ignore();
+
+            cout << "\nSteps in solution path:" << endl;
+        }
         for (int i = 0; i < (int)steps.size(); ++i) {
             if(i == 0) {
+                //is out of order in code due to data being added in function but is in order in visualization
+                fullAction << "<text x='" << 100
+                    << "' y='" << 100 + (((steps.size()*2)+1)*40)
+                    << "' dominant-baseline='middle' text-anchor='left' "
+                        "font-size='40'>";
+                fullAction << "Hit ENTER when done / Hit 'i' to add a note" << "</text>\n";
+                
                 fullAction << "<text x='" << 100 << "' y='" << 100
                     << "' dominant-baseline='middle' text-anchor='left' "
                         "font-size='30'>";
                 fullAction << "Step " << (i*2) + 1 << " of " << (steps.size()*2)+1 << ": ";
                 string logEntry = steps[i]->action;
+                size_t pos = 0;
+                while ((pos = logEntry.find("\x1b[32m", pos)) != string::npos) {
+                    logEntry.erase(pos, 5);
+                }   
+                pos = 0;
+                while ((pos = logEntry.find("\x1b[31m", pos)) != string::npos) {
+                    logEntry.erase(pos, 5);
+                }
+                pos = 0;
+                while ((pos = logEntry.find("\x1b[0m", pos)) != string::npos) {
+                    logEntry.erase(pos, 4);
+                }
+
                 string startCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);;
                 pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
 
-                vector<vector<string>> gridColors = vectorFormat(currNode->state, initialSource, source, steps[i]);
-                outputGridScreen(gridColors,currNode->state, fullAction, initialSourceStr, startCoords, 8, 12, 100);
+                vector<vector<string>> gridColors = vectorFormat(currNode->state, initialSource, source);
+                outputGridScreen(gridColors,currNode->state, fullAction, initialSourceStr, startCoords, 8, 12, 100, (i*2)+1);
+                log.addLogEntry(initialSourceStr + " was moved to " + startCoords);
+
                 string noteOrContinue;
                 getline(cin, noteOrContinue);
+                if (noteOrContinue == "i" || noteOrContinue == "I") {
+                    cout << "Enter your note: ";
+                    string note;
+                    getline(cin, note);
+                    log.writeNote(note);
+
+                    cout << "Note added to log." << endl;
+                    cout << "Hit ENTER when done \n\n" << endl;
+                    cin.ignore();
+                }
             }
             fullAction << "<text x='" << 100 << "' y='" << 100 + (((i*2)+1)*40)
                 << "' dominant-baseline='middle' text-anchor='left' "
                     "font-size='30'>";
             fullAction << "Step " << (i*2) + 2 << " of " << (steps.size()*2)+1 << ": ";
-            cout << "Step: " << i + 1 << " of " << steps.size() << ": " << steps[i]->action << endl;
+            cout << "Step " << i + 1 << " of " << steps.size() << ": " << steps[i]->action << endl;
             cout << "Hit ENTER when done / Hit 'i' to add a note \n" << endl;
 
             // removes color for log entry
@@ -360,8 +410,9 @@ int main() {
             pair<int,int> source = {stoi(startCoords.substr(1, startCoords.find(",") - 1)), stoi(startCoords.substr(startCoords.find(",") + 1, startCoords.find("]") - startCoords.find(",") - 1))};
             pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
 
-            vector<vector<string>> gridColors = vectorFormat(currNode->state, source, dest, steps[i]);
-            outputGridScreen(gridColors, currNode->state, fullAction, startCoords, endCoords, 8, 12, 100);
+            vector<vector<string>> gridColors = vectorFormat(currNode->state, source, dest);
+            outputGridScreen(gridColors, currNode->state, fullAction, startCoords, endCoords, 8, 12, 100, (i*2)+2);
+            log.addLogEntry(startCoords + " was moved to " + endCoords);
             
             string noteOrContinue;
             getline(cin, noteOrContinue);
@@ -384,28 +435,78 @@ int main() {
                         "font-size='30'>";
                 fullAction << "Step " << (i*2) + 3 << " of " << (steps.size()*2)+1 << ": ";
                 string logEntry = currNode->action;
+                size_t pos = 0;
+                while ((pos = logEntry.find("\x1b[32m", pos)) != string::npos) {
+                    logEntry.erase(pos, 5);
+                }   
+                pos = 0;
+                while ((pos = logEntry.find("\x1b[31m", pos)) != string::npos) {
+                    logEntry.erase(pos, 5);
+                }
+                pos = 0;
+                while ((pos = logEntry.find("\x1b[0m", pos)) != string::npos) {
+                    logEntry.erase(pos, 4);
+                }
+
                 string endCoords = logEntry.substr(logEntry.rfind("[") , logEntry.rfind("]") - logEntry.rfind("[") + 1);
                 pair<int,int> dest = {stoi(endCoords.substr(1, endCoords.find(",") - 1)), stoi(endCoords.substr(endCoords.find(",") + 1, endCoords.find("]") - endCoords.find(",") - 1))};
 
-                vector<vector<string>> gridColors = vectorFormat(currNode->state, dest, initialSource, steps[i]);
-                outputGridScreen(gridColors, currNode->state, fullAction, endCoords, initialSourceStr, 8, 12, 100);
+                vector<vector<string>> gridColors = vectorFormat(currNode->state, dest, initialSource);
+                outputGridScreen(gridColors, currNode->state, fullAction, endCoords, initialSourceStr, 8, 12, 100, (i*2)+3);
+                log.addLogEntry(endCoords + " was moved to " + initialSourceStr);
+
                 string noteOrContinue;
                 getline(cin, noteOrContinue);
+                if (noteOrContinue == "i" || noteOrContinue == "I") {
+                    cout << "Enter your note: ";
+                    string note;
+                    getline(cin, note);
+                    log.writeNote(note);
+
+                    cout << "Note added to log." << endl;
+                    cout << "Hit ENTER when done \n\n" << endl;
+                    cin.ignore();
+                }
             } else {
                 fullAction << "<text x='" << 100 << "' y='" << 100 + (((i*2)+2)*40)
                     << "' dominant-baseline='middle' text-anchor='left' "
                         "font-size='30'>";
                 fullAction << "Step " << (i*2) + 3 << " of " << (steps.size()*2)+1 << ": ";
                 string logEntry = steps[i+1]->action;
+                size_t pos = 0;
+                while ((pos = logEntry.find("\x1b[32m", pos)) != string::npos) {
+                    logEntry.erase(pos, 5);
+                }   
+                pos = 0;
+                while ((pos = logEntry.find("\x1b[31m", pos)) != string::npos) {
+                    logEntry.erase(pos, 5);
+                }
+                pos = 0;
+                while ((pos = logEntry.find("\x1b[0m", pos)) != string::npos) {
+                    logEntry.erase(pos, 4);
+                }
+
                 string nextStartCoords = endCoords;
                 string nextEndCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);
                 pair<int,int> source = {stoi(nextStartCoords.substr(1, nextStartCoords.find(",") - 1)), stoi(nextStartCoords.substr(nextStartCoords.find(",") + 1, nextStartCoords.find("]") - nextStartCoords.find(",") - 1))};
                 pair<int,int> dest = {stoi(nextEndCoords.substr(1, nextEndCoords.find(",") - 1)), stoi(nextEndCoords.substr(nextEndCoords.find(",") + 1, nextEndCoords.find("]") - nextEndCoords.find(",") - 1))};
 
-                vector<vector<string>> gridColors = vectorFormat(currNode->state, source, dest, steps[i]);
-                outputGridScreen(gridColors, currNode->state, fullAction, nextStartCoords, nextEndCoords, 8, 12, 100);
+                vector<vector<string>> gridColors = vectorFormat(currNode->state, source, dest);
+                outputGridScreen(gridColors, currNode->state, fullAction, nextStartCoords, nextEndCoords, 8, 12, 100, (i*2)+3);
+                log.addLogEntry(nextStartCoords + " was moved to " + nextEndCoords);
+
                 string noteOrContinue;
                 getline(cin, noteOrContinue);
+                if (noteOrContinue == "i" || noteOrContinue == "I") {
+                    cout << "Enter your note: ";
+                    string note;
+                    getline(cin, note);
+                    log.writeNote(note);
+
+                    cout << "Note added to log." << endl;
+                    cout << "Hit ENTER when done \n\n" << endl;
+                    cin.ignore();
+                }
             }
 
             // removes color for log entry
@@ -426,12 +527,11 @@ int main() {
             // string startCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);;
             // string endCoords = logEntry.substr(logEntry.rfind("[") , logEntry.rfind("]") - logEntry.rfind("[") + 1);;
 
-            log.addLogEntry(startCoords + " was moved to " + endCoords);
             
         }
 
         // write updated manifest to file
-        manifest.writeManifestToFile(shortManifestName + "OUTBOUND.txt", goal->state, steps);
+        //manifest.writeManifestToFile(shortManifestName + "OUTBOUND.txt", goal->state, steps);
         // add log of solution completion
         stringstream endText;
         endText << "<text x='" << 100
@@ -454,13 +554,30 @@ int main() {
                     << "' dominant-baseline='middle' text-anchor='left' "
                         "font-size='40'>";
         endText << "Hit ENTER when you are done" << "</text>\n";
+        if(steps.size() != 0) {
+            vector<vector<string>> endGridColors = vectorFormat(goal->state, initialSource, initialDest);
+            outputFirstScreen(endGridColors, currNode->state, endText, 8, 12, 100);
+            log.addLogEntry("Finished a Cycle. Manifest " + manifestFile + " was written to desktop, and a reminder pop-up to operator to send file was displayed.");
+            outputNewManifest(goal->state, shortManifestName);
+            
+        }
+        else {
+            log.addLogEntry("Finished a Cycle. Manifest " + manifestFile + " was written to desktop, and a reminder pop-up to operator to send file was displayed.");
+            outputNewManifest(root->state, shortManifestName);
+        }
 
-        vector<vector<string>> endGridColors = vectorFormat(goal->state, initialSource, initialDest, steps[0]);
-        outputFirstScreen(endGridColors, currNode->state, endText, 8, 12, 100);
-        log.addLogEntry("Finished a Cycle. Manifest " + manifestFile + " was written to desktop, and a reminder pop-up to operator to send file was displayed.");
-        outputNewManifest(goal->state, shortManifestName);
         string noteOrContinue;
         getline(cin, noteOrContinue);
+        if (noteOrContinue == "i" || noteOrContinue == "I") {
+            cout << "Enter your note: ";
+            string note;
+            getline(cin, note);
+            log.writeNote(note);
+
+            cout << "Note added to log." << endl;
+            cout << "Hit ENTER when done \n\n" << endl;
+            cin.ignore();
+        }
     }
 
     //implicitly should call destructor to save log before program ends
