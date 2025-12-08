@@ -36,7 +36,6 @@ public:
     void clearContainers() { containers.clear(); }
     int getContainerCount() const; // returns number of containers in manifest (will be used for log)
     Container getCurrContainer(int index) { return containers[index]; } // returns container at specified index
-    int getContainerCount() const;
     vector<pair<int,int>> movable_boxes();
     vector<vector<int>> grid_to_vector() const;
     vector<vector<Container>> get() const;
