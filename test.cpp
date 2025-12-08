@@ -13,7 +13,7 @@ void outputMainScreen() {
     std::ofstream file("grid.svg");
 
     file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
-        << 1600 << "' height='" 
+        << 2000 << "' height='" 
         << 1400 << "'>\n";
     file << "<rect width='100%' height='100%' fill='white'/>\n";
     file << "<text x='" << 100
@@ -28,11 +28,11 @@ void outputMainScreen() {
 void outputFirstScreen(const vector<vector<string>>& gridColors, vector<vector<Container>> grid, stringstream& statement, int rows, int cols, int cellSize) {
     std::ofstream file("grid.svg");
     file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
-            << 1600 << "' height='" 
+            << 2000 << "' height='" 
             << 1400 << "'>\n";
         file << "<rect width='100%' height='100%' fill='white'/>\n";
         file << statement.str();
-        file << "<rect x='" << 200
+        file << "<rect x='" << 700
                     << "' y='" << 400 
                     << "' width='" << cellSize 
                     << "' height='" << cellSize 
@@ -40,7 +40,7 @@ void outputFirstScreen(const vector<vector<string>>& gridColors, vector<vector<C
                     << "' stroke='black'/>\n";
 
         for (int r = 0; r < rows; r++) {
-            file << "<text x='" << 150 
+            file << "<text x='" << 650 
                 << "' y='" << 1250 - r * cellSize
                 << "' dominant-baseline='middle' text-anchor='left' "
                     "font-size='30'> "
@@ -48,14 +48,14 @@ void outputFirstScreen(const vector<vector<string>>& gridColors, vector<vector<C
                 << "</text>\n";
             for (int c = 0; c < cols; c++) {
                 if (r == 0) {
-                    file << "<text x='" << 250 + c * cellSize 
+                    file << "<text x='" << 750 + c * cellSize 
                         << "' y='" << 1350
                         << "' dominant-baseline='middle' text-anchor='middle' "
                             "font-size='30'>"
                         << std::setw(2) << std::setfill('0') << c + 1
                         << "</text>\n";
                 }
-                int x = 200 + c * cellSize;
+                int x = 700 + c * cellSize;
                 int y = 1200 - r * cellSize;
 
                 // Draw rectangle
@@ -103,12 +103,12 @@ void outputGridScreen(const vector<vector<string>>& gridColors, vector<vector<Co
     }
 
         file << "<svg xmlns='http://www.w3.org/2000/svg' width='" 
-            << 1600 << "' height='" 
+            << 2000 << "' height='" 
             << 1400 << "'>\n";
         file << "<rect width='100%' height='100%' fill='white'/>\n";
         file << currStep.str();
         if(startCoords == "park") {
-            file << "<rect x='" << 200
+            file << "<rect x='" << 700
                     << "' y='" << 400 
                     << "' width='" << cellSize 
                     << "' height='" << cellSize 
@@ -116,7 +116,7 @@ void outputGridScreen(const vector<vector<string>>& gridColors, vector<vector<Co
                     << "' stroke='black'/>\n";
         }
         else if(endCoords == "park") {
-            file << "<rect x='" << 200
+            file << "<rect x='" << 700
                     << "' y='" << 400 
                     << "' width='" << cellSize 
                     << "' height='" << cellSize 
@@ -125,7 +125,7 @@ void outputGridScreen(const vector<vector<string>>& gridColors, vector<vector<Co
         }
 
         for (int r = 0; r < rows; r++) {
-            file << "<text x='" << 150 
+            file << "<text x='" << 650 
                 << "' y='" << 1250 - r * cellSize
                 << "' dominant-baseline='middle' text-anchor='left' "
                     "font-size='30'> "
@@ -133,14 +133,14 @@ void outputGridScreen(const vector<vector<string>>& gridColors, vector<vector<Co
                 << "</text>\n";
             for (int c = 0; c < cols; c++) {
                 if (r == 0) {
-                    file << "<text x='" << 250 + c * cellSize 
+                    file << "<text x='" << 750 + c * cellSize 
                         << "' y='" << 1350
                         << "' dominant-baseline='middle' text-anchor='middle' "
                             "font-size='30'>"
                         << std::setw(2) << std::setfill('0') << c + 1
                         << "</text>\n";
                 }
-                int x = 200 + c * cellSize;
+                int x = 700 + c * cellSize;
                 int y = 1200 - r * cellSize;
 
                 // Draw rectangle
@@ -341,8 +341,13 @@ int main() {
                     << "' y='" << 100 + (((steps.size()*2)+1)*40)
                     << "' dominant-baseline='middle' text-anchor='left' "
                         "font-size='40'>";
-                fullAction << "Hit ENTER when done / Hit 'i' to add a note" << "</text>\n";
-                
+                fullAction << "Hit ENTER when done" << "</text>\n";
+                fullAction << "<text x='" << 100
+                    << "' y='" << 100 + (((steps.size()*2)+2)*40)
+                    << "' dominant-baseline='middle' text-anchor='left' "
+                        "font-size='40'>";
+                fullAction << "Hit 'i' to add a note" << "</text>\n";
+
                 fullAction << "<text x='" << 100 << "' y='" << 100
                     << "' dominant-baseline='middle' text-anchor='left' "
                         "font-size='30'>";
