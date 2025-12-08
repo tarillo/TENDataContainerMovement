@@ -26,6 +26,7 @@ struct Container {       //used to keep track each cell in the grid
 class Manifest {
 private:
     vector<Container> containers;   
+    void endContainerMap(const vector<string>& solutionSteps, vector<vector<Container*>>& finalMapping);
 
 public:
     Container* grid[8][12] = {nullptr};
@@ -37,7 +38,7 @@ public:
 
     vector<pair<int,int>> movable_boxes();
     vector<vector<int>> grid_to_vector() const;
-    void writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations) ; // writes the current manifest to a file
+    void writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations, const vector<string>& solutionSteps) ; // writes the current manifest to a file
 };
 
 void Manifest::loadManifest(const string& filename) {                       //getting the data from the manifest file
@@ -236,71 +237,85 @@ vector<vector<int>> Manifest::grid_to_vector() const {
     return result;
 }
 
-void Manifest::writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations) {
+void Manifest::endContainerMap(const vector<string>& solutionSteps, vector<vector<Container*>>& finalMapping) {
+    
+    // makes OG map of containers
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 12; ++c) {
+            finalMapping[r][c] = grid[r][c];
+        }
+    }
+    
+    // goes through list of steps in solution
+    for (const string& step : solutionSteps) {
+
+        // saves the from and to coordinates
+        size_t fromBracket = step.find("[");
+        size_t fromComma = step.find(",", fromBracket);
+        size_t fromClose = step.find("]", fromComma);
+        
+        size_t toBracket = step.rfind("[");
+        size_t toComma = step.find(",", toBracket);
+        size_t toClose = step.find("]", toComma);
+        
+        if (fromBracket == string::npos || toBracket == string::npos) continue;
+        
+        int r1 = stoi(step.substr(fromBracket + 1, fromComma - fromBracket - 1)) - 1;
+        int c1 = stoi(step.substr(fromComma + 1, fromClose - fromComma - 1)) - 1;
+        int r2 = stoi(step.substr(toBracket + 1, toComma - toBracket - 1)) - 1;
+        int c2 = stoi(step.substr(toComma + 1, toClose - toComma - 1)) - 1;
+        
+        // doing a swap of locations for new container (makes a new map for containers but updated!)
+        finalMapping[r2][c2] = finalMapping[r1][c1];
+        finalMapping[r1][c1] = nullptr;
+    }
+}
+
+void Manifest::writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations,const vector<string>& solutionSteps) {
     ofstream outFS(filename);
 
     if (!outFS.is_open()) {
         cout << "Error: Cannot open file for writing: " << filename << endl;
         return;
     }
-
-    // Track which positions were written to avoid duplicates
-    vector<vector<bool>> written(8, vector<bool>(12, false));
-
-    // First pass: write all original positions with updated weights
-    for (int i = 0; i < containers.size(); i++) {
-        Container& box = containers[i];
-        int row = box.x;
-        int col = box.y;
-        
-        outFS << "[" << setfill('0') << setw(2) << (row + 1) << ","
-              << setw(2) << (col + 1) << "] ";
-        
-        int updatedWeight = updatedLocations[row][col];
-        
-        if (updatedWeight == 0) {
-            outFS << "{0} ,UNUSED" << endl;
-        } else if (updatedWeight == -1) {
-            outFS << "{0} ,NAN" << endl;
-        } else {
-            outFS << "{" << updatedWeight << "} ," << box.description << endl;
-        }
-        
-        written[row][col] = true;
-    }
     
-    // Second pass: write new positions (containers that moved)
-    // Match containers to their new positions by finding where their weight ended up
-    for (int i = 0; i < containers.size(); i++) {
-        Container& box = containers[i];
-        int origRow = box.x;
-        int origCol = box.y;
-        int weight = box.weight;
+    // builds maps of final positions after moves from solution
+    vector<vector<Container*>> finalMapping(8, vector<Container*>(12, nullptr));
+    endContainerMap(solutionSteps, finalMapping);
+    
+    // step 1: write OG container positions
+    for (const Container& box : containers) {
+
+        // write position
+        outFS << "[" << setfill('0') << setw(2) << (box.x + 1) << "," << setw(2) << (box.y + 1) << "], ";
         
-        // Skip UNUSED, NAN, or empty containers
-        if (weight <= 0) continue;
+        int weight = updatedLocations[box.x][box.y];
         
-        // If the weight is still at original position, skip (not moved)
-        if (updatedLocations[origRow][origCol] == weight) continue;
-        
-        // Find where this container's weight moved to
-        for (int row = 0; row < 8; ++row) {
-            for (int col = 0; col < 12; ++col) {
-                if (written[row][col]) continue; // Already written
-                
-                if (updatedLocations[row][col] == weight) {
-                    // Found the new position of this container
-                    outFS << "[" << setfill('0') << setw(2) << (row + 1) << ","
-                          << setw(2) << (col + 1) << "] ";
-                    outFS << "{" << weight << "} ," << box.description << endl;
-                    
-                    written[row][col] = true;
-                    break;
-                }
+        // writes weight AND status
+        if (weight == -1) {
+            outFS << "{0}, NAN" << endl;
+
+        }
+        else if (weight == 0 && (box.isEmpty || box.isIllegal)) {
+            // Original cell was UNUSED or NAN
+            outFS << "{0}, UNUSED" << endl;
+
+        }
+        else { // comparison to new mapping
+
+            // find which container is now at this position
+            Container* current = finalMapping[box.x][box.y];
+            if (current != nullptr) {
+                outFS << "{" << current->weight << "}, " << current->description << endl;
+
+            } else {
+                // OG container moved away
+                outFS << "{0}, UNUSED" << endl;
+
             }
         }
     }
-
+    
     outFS.close();
 }
 

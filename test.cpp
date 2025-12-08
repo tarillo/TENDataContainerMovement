@@ -20,7 +20,7 @@ int main() {
         getline(cin, manifestFile);
 
         // check input if it a true manifest or an exit
-        if (manifestFile == "exit") {
+        if (manifestFile == "exit" || manifestFile == "quit") {
             break;
         }
 
@@ -30,7 +30,7 @@ int main() {
         manifest.buildGrid();
 
         // display number of containers loaded
-        string shortManifestName = manifestFile.substr(0, manifestFile.find_last_of(".") + 1);
+        string shortManifestName = manifestFile.substr(0, manifestFile.find_last_of("."));
         cout <<  shortManifestName << " has " << manifest.getContainerCount() << " containers" << endl;
         cout << "Computing a solution..." << endl;
 
@@ -46,13 +46,14 @@ int main() {
         cout << "Starting A*..." << endl;
         Node* goal = solver.search(&tree, &problem);
 
+        // CASE handling if no solution found
         if (goal == nullptr) {
             cout << "No solution found." << endl;
             log.addLogEntry("No balance solution found for manifest " + manifestFile + ".");
             return 0;
         }
 
-        cout << "\nSolution has been found, it will take" << endl; cout << goal->cost << " move(s) \x1b[90m(not including from then to default crane location)\x1b[0m \n  " << goal->cost << " minutes \x1b[90m(not including from then to default crane location)\x1b[0m" << endl;
+        cout << "\nSolution has been found, it will take" << endl;
 
         vector<string> steps = solver.getSolutionPath(goal);
 
@@ -110,6 +111,8 @@ int main() {
             log.addLogEntry(startCoords + " was moved to " + endCoords);
         }
 
+        // write updated manifest to file
+        manifest.writeManifestToFile(shortManifestName + "OUTBOUND.txt", goal->state, steps);
         // add log of solution completion
         log.addLogEntry("Finished a Cycle. Manifest " + manifestFile + " was written to desktop, and a reminder pop-up to operator to send file was displayed.");
     }
