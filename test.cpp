@@ -222,11 +222,13 @@ int main() {
         getline(cin, manifestFile);
 
         // check input if it a true manifest or an exit
-        if (manifestFile == "exit") {
+        if (manifestFile == "exit" || manifestFile == "quit") {
             break;
         }
 
         Manifest manifest;
+
+        auto start_time = chrono::steady_clock::now();
 
         manifest.loadManifest(manifestFile);    // validates file opening and loads data into containers
         manifest.buildGrid();
@@ -243,23 +245,34 @@ int main() {
         problem.manifest = &manifest;
 
         Tree tree(&problem);
+        aStar::SearchStats stats;
 
         aStar solver;
         cout << "Starting A*..." << endl;
-        Node* goal = solver.search(&tree, &problem);
+        Node* goal = solver.search(&tree, &problem, stats);
+        auto stop_time = chrono::steady_clock::now();
 
+
+        auto total_time = chrono::duration_cast<chrono::milliseconds>(stop_time - start_time).count();
+        
+        // CASE handling if no solution found
         if (goal == nullptr) {
             cout << "No solution found." << endl;
             log.addLogEntry("No balance solution found for manifest " + manifestFile + ".");
             return 0;
         }
 
-        cout << "\nSolution has been found, it will take" << endl; cout << goal->cost << " move(s) \x1b[90m(not including from then to default crane location)\x1b[0m \n  " << goal->cost << " minutes \x1b[90m(not including from then to default crane location)\x1b[0m" << endl;
+        cout << "\nSolution has been found, it will take" << endl;
 
         vector<Node*> steps = solver.getSolutionPath(goal);
 
         cout << "   " << steps.size() << " move(s) \x1b[90m(not including from then to default crane location)\x1b[0m \n   " << goal->cost << " minutes \x1b[90m(not including from then to default crane location)\x1b[0m" << endl;
-
+        // cout << "\n===== ASTAR SEARCH DATA =====\n";
+        // cout << "Nodes Expanded: " << stats.nodesExpanded << endl;
+        // cout << "Max Queue Size: " << stats.maxQueueSize << endl;
+        // cout << "Solution Depth (Moves): " << stats.solutionDepthMoves << endl;
+        // cout << "Solution Depth (Minutes): " << stats.solutionDepthMinutes << endl;
+        // cout << "Total time(CPU): " << total_time << " milliseconds" << endl;
         //TANYA NOTE: need to add crane moves from parked to first move and last move to parked to add to log and output in steps.
         // add from parked cram to first move
         //steps.insert(steps.begin(), "Move crane from \x1b[32mpark\x1b[0m to \x1b[31m[" + to_string(step) + "," + to_string(goal->crane_col) + "]\x1b[0m");
@@ -417,6 +430,8 @@ int main() {
             
         }
 
+        // write updated manifest to file
+        manifest.writeManifestToFile(shortManifestName + "OUTBOUND.txt", goal->state, steps);
         // add log of solution completion
         stringstream endText;
         endText << "<text x='" << 100

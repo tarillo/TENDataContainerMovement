@@ -41,11 +41,12 @@ private:
         tm timeinfo{};
 
         // convert int time to readable person time
-        #ifdef _WIN32 // for windows
-         //   localtime_s(&timeinfo, &present_time_t);                        
-        #else // if linux or macOS
-            timeinfo = *localtime(&present_time_t); 
-        #endif 
+        #ifdef _MSC_VER
+            localtime_s(&timeinfo, &present_time_t);  // MSVC / Visual Studio
+        #else
+            timeinfo = *localtime(&present_time_t);   // MinGW / g++ / Linux / macOS
+        #endif
+
         
         return timeinfo;
     }
@@ -104,4 +105,4 @@ public:
 
 
 
-#endif // LOG_H
+#endif //LOG_H

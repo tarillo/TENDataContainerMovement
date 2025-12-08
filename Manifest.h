@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cctype>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -25,6 +26,7 @@ struct Container {       //used to keep track each cell in the grid
 class Manifest {
 private:
     vector<Container> containers;   
+    void endContainerMap(const vector<string>& solutionSteps, vector<vector<Container*>>& finalMapping);
 
 public:
     Container* grid[8][12] = {nullptr};
@@ -37,6 +39,7 @@ public:
     vector<pair<int,int>> movable_boxes();
     vector<vector<int>> grid_to_vector() const;
     vector<vector<Container>> get() const;
+    void writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations, const vector<string>& solutionSteps) ; // writes the current manifest to a file
 };
 vector<vector<Container>> Manifest::get() const {
     vector<vector<Container>> gridState;
@@ -65,7 +68,7 @@ vector<vector<Container>> Manifest::get() const {
 void Manifest::loadManifest(const string& filename) {                       //getting the data from the manifest file
     ifstream inFS(filename);
 
-    if (!inFS.is_open()) {                                                  //error handling for file
+    if (!inFS.is_open()) {                                                  //ERROR handling for file
         cout << "Error: Cannot open Manifest file: " << filename << endl;
         exit(1);
     }
@@ -92,6 +95,7 @@ void Manifest::loadManifest(const string& filename) {                       //ge
         size_t weightEnd = line.find('}', weightStart);
         size_t descStart = line.find("},", weightEnd);
 
+        // ERROR handling for malformed lines
          if (rowStart == string::npos || comma == string::npos || rowEnd == string::npos || weightStart == string::npos || weightEnd == string::npos || descStart == string::npos) {
             cout << "Warning: malformed line " << lineNumber << endl;
             continue;
@@ -99,9 +103,11 @@ void Manifest::loadManifest(const string& filename) {                       //ge
 
         Container box;
 
+        // 
         string rowStr = line.substr(rowStart + 1, comma - (rowStart + 1));
         string colStr = line.substr(comma + 1, rowEnd - (comma + 1));
 
+        // Clears leading/trailing whitespace
         auto trim = [](string &s) {
             size_t a = 0;
             while (a < s.size() && isspace((unsigned char)s[a])) a++;
@@ -109,6 +115,7 @@ void Manifest::loadManifest(const string& filename) {                       //ge
             while (b > a && isspace((unsigned char)s[b-1])) b--;
             s = s.substr(a, b - a);
         };
+
         trim(rowStr);
         trim(colStr);
 
@@ -116,18 +123,19 @@ void Manifest::loadManifest(const string& filename) {                       //ge
             box.x = stoi(rowStr) - 1;  //Changes row/column value to index value (1 --> 0)
             box.y = stoi(colStr) - 1;  //Stoi used to convert string "01" to integer 1
         }
-        catch (...) { //If any errors occur when trying to change the string to an integer this catch will output a warning
+        catch (...) { // ERROR handling if any errors occur when trying to change the string to an integer this catch will output a warning
             cout << "Warning: bad coordinates line " << lineNumber << endl; 
             continue;
         }
 
+        // Extract weight
         string weightStr = line.substr(weightStart + 1, weightEnd - (weightStart + 1));
         trim(weightStr);
 
         int weightValue = 0;
         bool weightValid = true; //Tells us if the weight we read from file is valid (only non-negative digits)
 
-        
+        // Validate weight string
         string digits = "";
         for (int i = 0; i < weightStr.length(); i++){ //iterates through each character in the weight
             char c = weightStr[i];
@@ -135,6 +143,8 @@ void Manifest::loadManifest(const string& filename) {                       //ge
                 digits.push_back(c);
             }   
         }
+        
+        // ERROR handling for invalid weight strings
         if (digits.empty()) {
             weightValid = false;
         } else {
@@ -145,7 +155,7 @@ void Manifest::loadManifest(const string& filename) {                       //ge
             }
         }
         
-
+        // Extract description
         string description = line.substr(descStart + 3); //Extract our description of what is in the container
         trim(description);
 
@@ -187,6 +197,17 @@ void Manifest::buildGrid() {
             grid[box.x][box.y] = &box;    // store a pointer to the container in the grid
         }
     }
+}
+
+int Manifest::getContainerCount() const {
+    // get number of containers in manifest, NOT unused or NAN
+    int count = 0;
+    for (const auto& box : containers) {
+        if (!box.isEmpty && !box.isIllegal) {
+            count++;
+        }
+    }
+    return count;
 }
 
 vector<pair<int,int>> Manifest::movable_boxes() { //To prevent moving boxes from under another box
@@ -238,6 +259,88 @@ vector<vector<int>> Manifest::grid_to_vector() const {
         }
     }
     return result;
+}
+
+void Manifest::endContainerMap(const vector<string>& solutionSteps, vector<vector<Container*>>& finalMapping) {
+    
+    // makes OG map of containers
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 12; ++c) {
+            finalMapping[r][c] = grid[r][c];
+        }
+    }
+    
+    // goes through list of steps in solution
+    for (const string& step : solutionSteps) {
+
+        // saves the from and to coordinates
+        size_t fromBracket = step.find("[");
+        size_t fromComma = step.find(",", fromBracket);
+        size_t fromClose = step.find("]", fromComma);
+        
+        size_t toBracket = step.rfind("[");
+        size_t toComma = step.find(",", toBracket);
+        size_t toClose = step.find("]", toComma);
+        
+        if (fromBracket == string::npos || toBracket == string::npos) continue;
+        
+        int r1 = stoi(step.substr(fromBracket + 1, fromComma - fromBracket - 1)) - 1;
+        int c1 = stoi(step.substr(fromComma + 1, fromClose - fromComma - 1)) - 1;
+        int r2 = stoi(step.substr(toBracket + 1, toComma - toBracket - 1)) - 1;
+        int c2 = stoi(step.substr(toComma + 1, toClose - toComma - 1)) - 1;
+        
+        // doing a swap of locations for new container (makes a new map for containers but updated!)
+        finalMapping[r2][c2] = finalMapping[r1][c1];
+        finalMapping[r1][c1] = nullptr;
+    }
+}
+
+void Manifest::writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations,const vector<string>& solutionSteps) {
+    ofstream outFS(filename);
+
+    if (!outFS.is_open()) {
+        cout << "Error: Cannot open file for writing: " << filename << endl;
+        return;
+    }
+    
+    // builds maps of final positions after moves from solution
+    vector<vector<Container*>> finalMapping(8, vector<Container*>(12, nullptr));
+    endContainerMap(solutionSteps, finalMapping);
+    
+    // step 1: write OG container positions
+    for (const Container& box : containers) {
+
+        // write position
+        outFS << "[" << setfill('0') << setw(2) << (box.x + 1) << "," << setw(2) << (box.y + 1) << "], ";
+        
+        int weight = updatedLocations[box.x][box.y];
+        
+        // writes weight AND status
+        if (weight == -1) {
+            outFS << "{0}, NAN" << endl;
+
+        }
+        else if (weight == 0 && (box.isEmpty || box.isIllegal)) {
+            // Original cell was UNUSED or NAN
+            outFS << "{0}, UNUSED" << endl;
+
+        }
+        else { // comparison to new mapping
+
+            // find which container is now at this position
+            Container* current = finalMapping[box.x][box.y];
+            if (current != nullptr) {
+                outFS << "{" << current->weight << "}, " << current->description << endl;
+
+            } else {
+                // OG container moved away
+                outFS << "{0}, UNUSED" << endl;
+
+            }
+        }
+    }
+    
+    outFS.close();
 }
 
 #endif
