@@ -118,6 +118,7 @@ int Problem::heuristic(const vector<vector<int>>& state) const {            //ge
     int portSide = 0;
     int starSide = 0;
 
+    // gets weight on each side
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
             int weight = state[i][j];

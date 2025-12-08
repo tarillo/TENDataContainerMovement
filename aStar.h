@@ -122,12 +122,13 @@ Node* aStar::search(Tree* tree, Problem* problem, SearchStats& stats) {
             int destinationColumn = action.second.second;
             
             // the string description of the move to make, with color coding for terminal
+
             int SR = sourceRow + 1;
             int SC = SourceColumn + 1;
             int DR   = destinationRow + 1;
             int DC   = destinationColumn + 1;
-            string moveDesc = "Move from \x1b[32m[" + to_string(SR) + "," + to_string(SC) +
-                "]\x1b[0m to \x1b[31m[" + to_string(DR) + "," + to_string(DC) + "]\x1b[0m";
+            string moveDesc = "Move from \x1b[32m[" + to_string(SR) + "," + to_string(SC) +"]\x1b[0m to \x1b[31m[" + to_string(DR) + "," + to_string(DC) + "]\x1b[0m";
+
 
             Node* child = new Node(newState, current, moveDesc, newCost, newHeuristic, destinationRow, destinationColumn);
 
