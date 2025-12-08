@@ -17,14 +17,20 @@ public:
             return (a->cost + a->heuristic) > (b->cost + b->heuristic);
         }
     };
+    struct SearchStats {
+        int nodesExpanded = 0;
+        int maxQueueSize = 0;
+        int solutionDepthMoves = 0;
+        int solutionDepthMinutes = 0;
+    };
 
-    Node* search(Tree* tree, Problem* problem);  //Main A* Search function
+    Node* search(Tree* tree, Problem* problem, SearchStats& stats);  //Main A* Search function
     vector<string> getSolutionPath(Node* goal); //Reconstructs solution path from goal node back to start
     vector<pair<vector<vector<int>>, int>> generate_successors(const Problem& prob, const vector<vector<int>>& state);
 };
 
 
-Node* aStar::search(Tree* tree, Problem* problem) {
+Node* aStar::search(Tree* tree, Problem* problem, SearchStats& stats) {
     priority_queue<Node*, vector<Node*>, NodeCompare> frontier;
     unordered_map<string,int> gscore; //Keeps track of the lowest cost found so far for each state
 
@@ -36,15 +42,21 @@ Node* aStar::search(Tree* tree, Problem* problem) {
     frontier.push(start);
     gscore[problem->toString(start->state)] = 0;
 
+
     Node* bestNode = start;
     int bestImbalance = start->heuristic;   //Best heuristic (imbalance) found so far
 
     int expansions = 0;
  
     while (!frontier.empty()) {  //A* Search Loop
-
+        if (frontier.size() > stats.maxQueueSize) {
+            stats.maxQueueSize = frontier.size();
+        }
         Node* current = frontier.top();  //Node with smallest total cost
         frontier.pop();
+        
+        stats.nodesExpanded++;
+
 
         string key = problem->toString(current->state);
 
@@ -62,6 +74,18 @@ Node* aStar::search(Tree* tree, Problem* problem) {
         }
 
         if (problem->goal(current->state)) { // Test to see if we reach goal. If so, we return it
+             Node* temp = current;
+            int depthMoves = 0;
+            int depthMinutes = 0;
+
+            while (temp->parent != nullptr) {
+                depthMoves++;
+                depthMinutes += temp->cost - temp->parent->cost; // accumulate step costs
+                temp = temp->parent;
+            }
+
+            stats.solutionDepthMoves = depthMoves;
+            stats.solutionDepthMinutes = depthMinutes;
             cout << "Goal found with imbalance = " << imbalance << " cost = " << current->cost << endl;
             return current;
         }
@@ -98,7 +122,12 @@ Node* aStar::search(Tree* tree, Problem* problem) {
             int destinationColumn = action.second.second;
             
             // the string description of the move to make, with color coding for terminal
-            string moveDesc = "Move from \x1b[32m[" + to_string(sourceRow) + "," + to_string(SourceColumn)+ "]\x1b[0m to \x1b[31m[" + to_string(destinationRow) + "," + to_string(destinationColumn) + "]\x1b[0m";
+            int SR = sourceRow + 1;
+            int SC = SourceColumn + 1;
+            int DR   = destinationRow + 1;
+            int DC   = destinationColumn + 1;
+            string moveDesc = "Move from \x1b[32m[" + to_string(SR) + "," + to_string(SC) +
+                "]\x1b[0m to \x1b[31m[" + to_string(DR) + "," + to_string(DC) + "]\x1b[0m";
 
             Node* child = new Node(newState, current, moveDesc, newCost, newHeuristic, destinationRow, destinationColumn);
 
