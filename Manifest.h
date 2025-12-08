@@ -34,7 +34,7 @@ public:
     void loadManifest(const string& filename);
     void buildGrid();
     void clearContainers() { containers.clear(); }
-    int getContainerCount() { return containers.size(); } // returns number of containers in manifest (will be used for log)
+    int getContainerCount() const; // returns number of containers in manifest (will be used for log)
     Container getCurrContainer(int index) { return containers[index]; } // returns container at specified index
     int getContainerCount() const;
     vector<pair<int,int>> movable_boxes();
@@ -274,25 +274,39 @@ void Manifest::endContainerMap(const vector<string>& solutionSteps, vector<vecto
     // goes through list of steps in solution
     for (const string& step : solutionSteps) {
 
+        // strip ANSI color codes to avoid stoi on sequences like "\x1b[31m01"
+        string cleanStep = step;
+        size_t posStrip = 0;
+        while ((posStrip = cleanStep.find("\x1b[", posStrip)) != string::npos) {
+            size_t mEnd = cleanStep.find('m', posStrip);
+            if (mEnd == string::npos) break;
+            cleanStep.erase(posStrip, mEnd - posStrip + 1);
+        }
+
         // saves the from and to coordinates
-        size_t fromBracket = step.find("[");
-        size_t fromComma = step.find(",", fromBracket);
-        size_t fromClose = step.find("]", fromComma);
+        size_t fromBracket = cleanStep.find("[");
+        size_t fromComma = cleanStep.find(",", fromBracket);
+        size_t fromClose = cleanStep.find("]", fromComma);
         
-        size_t toBracket = step.rfind("[");
-        size_t toComma = step.find(",", toBracket);
-        size_t toClose = step.find("]", toComma);
+        size_t toBracket = cleanStep.rfind("[");
+        size_t toComma = cleanStep.find(",", toBracket);
+        size_t toClose = cleanStep.find("]", toComma);
         
         if (fromBracket == string::npos || toBracket == string::npos) continue;
         
-        int r1 = stoi(step.substr(fromBracket + 1, fromComma - fromBracket - 1)) - 1;
-        int c1 = stoi(step.substr(fromComma + 1, fromClose - fromComma - 1)) - 1;
-        int r2 = stoi(step.substr(toBracket + 1, toComma - toBracket - 1)) - 1;
-        int c2 = stoi(step.substr(toComma + 1, toClose - toComma - 1)) - 1;
-        
-        // doing a swap of locations for new container (makes a new map for containers but updated!)
-        finalMapping[r2][c2] = finalMapping[r1][c1];
-        finalMapping[r1][c1] = nullptr;
+        try {
+            int r1 = stoi(cleanStep.substr(fromBracket + 1, fromComma - fromBracket - 1)) - 1;
+            int c1 = stoi(cleanStep.substr(fromComma + 1, fromClose - fromComma - 1)) - 1;
+            int r2 = stoi(cleanStep.substr(toBracket + 1, toComma - toBracket - 1)) - 1;
+            int c2 = stoi(cleanStep.substr(toComma + 1, toClose - toComma - 1)) - 1;
+            
+            // doing a swap of locations for new container (makes a new map for containers but updated!)
+            finalMapping[r2][c2] = finalMapping[r1][c1];
+            finalMapping[r1][c1] = nullptr;
+        } catch (const std::exception&) {
+            // skip malformed steps instead of crashing
+            continue;
+        }
     }
 }
 

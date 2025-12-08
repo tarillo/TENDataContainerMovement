@@ -4,6 +4,8 @@
 #include <queue>
 #include <unordered_set>
 #include <string>
+#include <iomanip>
+#include <sstream>
 #include "Node.h"
 #include "Tree.h"
 #include "Problem.h"
@@ -127,7 +129,11 @@ Node* aStar::search(Tree* tree, Problem* problem, SearchStats& stats) {
             int SC = SourceColumn + 1;
             int DR   = destinationRow + 1;
             int DC   = destinationColumn + 1;
-            string moveDesc = "Move from \x1b[32m[" + to_string(SR) + "," + to_string(SC) +"]\x1b[0m to \x1b[31m[" + to_string(DR) + "," + to_string(DC) + "]\x1b[0m";
+            std::ostringstream ss;
+
+            ss << "Move from \x1b[32m[" << std::setw(2) << std::setfill('0') << SR << "," << std::setw(2) << std::setfill('0') << SC << "]\x1b[0m to \x1b[31m[" << std::setw(2) << std::setfill('0') << DR << "," << std::setw(2) << std::setfill('0') << DC << "]\x1b[0m";
+
+            string moveDesc = ss.str(); 
 
 
             Node* child = new Node(newState, current, moveDesc, newCost, newHeuristic, destinationRow, destinationColumn);
