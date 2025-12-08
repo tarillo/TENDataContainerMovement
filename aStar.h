@@ -70,7 +70,7 @@ Node* aStar::search(Tree* tree, Problem* problem) {
 
         for (int i = 0; i < acts.size(); i++) {
             pair<pair<int,int>, pair<int,int>> action = acts[i]; //Each action is a pair of coords
-            vector<vector<int>> newState = problem->result(current->state, action); //Generate new state after applying this action
+            vector<vector<Container>> newState = problem->result(current->state, action); //Generate new state after applying this action
 
             int step_cost = problem->path_length(current->state, action.first, action.second);
             

@@ -13,38 +13,38 @@ using namespace std;
 
 class Problem {
 public:
-    vector<vector<int>> initialState;       //initial state of the grid/ship
+    vector<vector<Container>> initialState;       //initial state of the grid/ship
     int row = 8;                        
     int col = 12;  
     Manifest* manifest;      
 
     Problem()   {                                                       //constructor
-        initialState = vector<vector<int>>(8, vector<int>(12,0));       //all values set to zero
+        initialState = vector<vector<Container>>(8, vector<Container>(12));       //all values set to zero
     }
-    Problem(const vector<vector<int>>& initial) {                       //constructer with passed in initial value
+    Problem(const vector<vector<Container>>& initial) {                       //constructer with passed in initial value
         initialState = initial;
     }
 
-    bool is_solvable(const vector<vector<int>>& state) const;
-    bool goal(const vector<vector<int>>& state) const;
-    string toString(const vector<vector<int>>& state) const;
-    int heuristic(const vector<vector<int>>& state) const;
-    vector<pair<pair<int,int>, pair<int,int>>> actions(const vector<vector<int>>& state) const;
-    vector<vector<int>> result(const vector<vector<int>>& state, pair<pair<int,int>, pair<int,int>> action) const;
-    int path_length(const vector<vector<int>>& state, pair<int,int> start, pair<int,int> goal) const;
+    bool is_solvable(const vector<vector<Container>>& state) const;
+    bool goal(const vector<vector<Container>>& state) const;
+    string toString(const vector<vector<Container>>& state) const;
+    int heuristic(const vector<vector<Container>>& state) const;
+    vector<pair<pair<int,int>, pair<int,int>>> actions(const vector<vector<Container>>& state) const;
+    vector<vector<Container>> result(const vector<vector<Container>>& state, pair<pair<int,int>, pair<int,int>> action) const;
+    int path_length(const vector<vector<Container>>& state, pair<int,int> start, pair<int,int> goal) const;
 
    
-    int compute_imbalance(const vector<vector<int>>& state) const;
+    int compute_imbalance(const vector<vector<Container>>& state) const;
 };
 
 
-bool Problem::is_solvable(const vector<vector<int>>& state) const {
+bool Problem::is_solvable(const vector<vector<Container>>& state) const {
     int portSide = 0;
     int starSide = 0;
 
     for (int i = 0; i < row; ++i)    {                  //get weight of each side
         for (int j = 0; j < col; ++j)   {
-            int weight = state[i][j];
+            int weight = state[i][j].weight;
             if(weight <= 0)  {
                 continue;
             }
@@ -78,13 +78,13 @@ bool Problem::is_solvable(const vector<vector<int>>& state) const {
 }
 
 
-bool Problem::goal(const vector<vector<int>>& state) const {
+bool Problem::goal(const vector<vector<Container>>& state) const {
     int portSide = 0;
     int starSide = 0;
 
     for (int i = 0; i < row; ++i)    {                  //get weight of each side
         for (int j = 0; j < col; ++j)   {
-            int weight = state[i][j];
+            int weight = state[i][j].weight;
             if(weight <= 0)  {
                 continue;
             }
@@ -105,22 +105,22 @@ bool Problem::goal(const vector<vector<int>>& state) const {
     return balance <= limit;                            //return if its balanced or not
 }
 
-string Problem::toString(const vector<vector<int>>& state) const {      //turns the state into string that can be used in aStar to check if this state is already visited
+string Problem::toString(const vector<vector<Container>>& state) const {      //turns the state into string that can be used in aStar to check if this state is already visited
     string currState;                                                   
     for (int i = 0; i < row; ++i)
         for (int j = 0; j < col; ++j)
-            currState += to_string(state[i][j]) + ",";
+            currState += to_string(state[i][j].weight) + ",";
     return currState;
 }
 
 
-int Problem::heuristic(const vector<vector<int>>& state) const {            //get the heuristic value
+int Problem::heuristic(const vector<vector<Container>>& state) const {            //get the heuristic value
     int portSide = 0;
     int starSide = 0;
 
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
-            int weight = state[i][j];
+            int weight = state[i][j].weight;
             if (weight <= 0)    {
                 continue;
             }
@@ -135,11 +135,11 @@ int Problem::heuristic(const vector<vector<int>>& state) const {            //ge
     return abs(portSide - starSide);
 }
 
-int Problem::compute_imbalance(const vector<vector<int>>& state) const {
+int Problem::compute_imbalance(const vector<vector<Container>>& state) const {
     return heuristic(state);
 }
 
-int Problem::path_length(const vector<vector<int>>& state, pair<int,int> start, pair<int,int> goal) const {            //get the length of the path the crane needs to take
+int Problem::path_length(const vector<vector<Container>>& state, pair<int,int> start, pair<int,int> goal) const {            //get the length of the path the crane needs to take
 
     int R = row;
     int C = col;
@@ -156,12 +156,12 @@ int Problem::path_length(const vector<vector<int>>& state, pair<int,int> start, 
         return -1;
     }
 
-    if (state[startR][startC] <= 0) return -1; //nothing to move
+    if (state[startR][startC].weight <= 0) return -1; //nothing to move
     if (startR == goalR && startC == goalC) return -1;        //make sure we are not moving to the same place
 
     
     for (int r = startR + 1; r < R; ++r) {      //making sure there is nothing above the container we wish to lift
-        if (state[r][startC] > 0)   {
+        if (state[r][startC].weight > 0)   {
             return -1;
         }
     }
@@ -191,7 +191,7 @@ int Problem::path_length(const vector<vector<int>>& state, pair<int,int> start, 
                 return -1;
             }
 
-            if (state[goalR - 1][goalC] > 0) {          //container beneath
+            if (state[goalR - 1][goalC].weight > 0) {          //container beneath
                 return dist;
             }
             return -1;
@@ -210,7 +210,7 @@ int Problem::path_length(const vector<vector<int>>& state, pair<int,int> start, 
                 continue;
             }
 
-            int cellVal = state[newRow][newCol];
+            int cellVal = state[newRow][newCol].weight;
             bool isSourceCell = (newRow == startR && newCol == startC);
 
             if (!isSourceCell && cellVal != 0) continue;
@@ -225,13 +225,13 @@ int Problem::path_length(const vector<vector<int>>& state, pair<int,int> start, 
 
 
 
-vector<pair<pair<int,int>, pair<int,int>>> Problem::actions(const vector<vector<int>>& state) const {
+vector<pair<pair<int,int>, pair<int,int>>> Problem::actions(const vector<vector<Container>>& state) const {
     vector<pair<pair<int,int>, pair<int,int>>> moves;
 
     for (int i = 0; i < col; ++i) {
         int sRow = -1;
         for (int j = row - 1; j >= 0; --j) {            //get top conatiner in the specified column
-            if (state[j][i] > 0) { 
+            if (state[j][i].weight > 0) { 
                 sRow = j; 
                 break; 
             }
@@ -248,12 +248,12 @@ vector<pair<pair<int,int>, pair<int,int>>> Problem::actions(const vector<vector<
             int c = k;
             int newRow = -1;
             for (int rr = 0; rr < row; ++rr) {
-                if (state[rr][c] != 0) continue;        //cannot move here
+                if (state[rr][c].weight != 0) continue;        //cannot move here
                 if (rr == 0) {                          //bottom row
                     newRow = rr; 
                     break; 
                 }
-                if (state[rr - 1][c] > 0) {             //conatainer is below
+                if (state[rr - 1][c].weight > 0) {             //conatainer is below
                     newRow = rr; 
                     break; 
                 }
@@ -277,18 +277,21 @@ vector<pair<pair<int,int>, pair<int,int>>> Problem::actions(const vector<vector<
 
 
 
-vector<vector<int>> Problem::result(const vector<vector<int>>& state, pair<pair<int,int>,pair<int,int>> action) const {
-    vector<vector<int>> newState = state;           //make sure we dont overwrite the original state
+vector<vector<Container>> Problem::result(const vector<vector<Container>>& state, pair<pair<int,int>,pair<int,int>> action) const {
+    vector<vector<Container>> newState = state;           //make sure we dont overwrite the original state
 
     int sRow = action.first.first;                  //get the action we eed to perform
     int sCol = action.first.second;
     int gRow = action.second.first;
     int gCol = action.second.second;
 
-    int weight = newState[sRow][sCol];                   //store the weight
-    newState[sRow][sCol] = 0;                       //remove container from where it originally was
-    newState[gRow][gCol] = weight;                       //container is moved to its new location
-
+    int weight = newState[sRow][sCol].weight;                   //store the weight
+    newState[sRow][sCol].weight = 0;                       //remove container from where it originally was
+    newState[gRow][gCol].weight = weight;                       //container is moved to its new location
+    newState[gRow][gCol].isEmpty = false;
+    newState[sRow][sCol].isEmpty = true;
+    newState[gRow][gCol].description = newState[sRow][sCol].description;
+    newState[sRow][sCol].description = "UNUSED";
     return newState;
 }
 

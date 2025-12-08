@@ -36,8 +36,31 @@ public:
     Container getCurrContainer(int index) { return containers[index]; } // returns container at specified index
     vector<pair<int,int>> movable_boxes();
     vector<vector<int>> grid_to_vector() const;
-    vector<Container> getContainers() const { return containers; };
+    vector<vector<Container>> get() const;
 };
+vector<vector<Container>> Manifest::get() const {
+    vector<vector<Container>> gridState;
+
+    for(int i = 0; i < 8; i++) {
+        vector<Container> row;
+        for(int j = 0; j < 12; j++) {
+            if (grid[i][j] != nullptr) {
+                row.push_back(*grid[i][j]);
+            } else {
+                Container emptyBox;
+                emptyBox.x = i;
+                emptyBox.y = j;
+                emptyBox.weight = 0;
+                emptyBox.description = "UNUSED";
+                emptyBox.isEmpty = true;
+                emptyBox.isIllegal = false;
+                row.push_back(emptyBox);
+            }
+        }
+        gridState.push_back(row);
+    }
+    return gridState;
+}
 
 void Manifest::loadManifest(const string& filename) {                       //getting the data from the manifest file
     ifstream inFS(filename);
