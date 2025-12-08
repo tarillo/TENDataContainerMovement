@@ -8,7 +8,7 @@
 using namespace std;
 
 struct Node {
-    vector<vector<int>> state;    // state is the coordinate in the 8 x 12 grid representing the boat
+    vector<vector<Container>> state;    // state is the coordinate in the 8 x 12 grid representing the boat
     Node* parent;
     string action;                // Action is the description of the moves we are making. (Left, right, up down)
     int cost;                     // accumulated cost(represented by manhattan distance)
@@ -16,7 +16,7 @@ struct Node {
     int crane_row;                  // crane row position (0..7)
     int crane_col;                  // crane col position (0..11)
 
-    Node(const vector<vector<int>>& s, int row = 0, int column = 7) {
+    Node(const vector<vector<Container>>& s, int row = 0, int column = 7) {
         state = s;
         parent = nullptr;
         action = "";
@@ -26,7 +26,7 @@ struct Node {
         crane_col = column;
     }
 
-    Node(const vector<vector<int>>& s, Node* p, const string& a, int c, int h, int row, int column) {
+    Node(const vector<vector<Container>>& s, Node* p, const string& a, int c, int h, int row, int column) {
         state = s;
         parent = p;
         action = a;

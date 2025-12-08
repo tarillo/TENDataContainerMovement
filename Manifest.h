@@ -34,12 +34,36 @@ public:
     void loadManifest(const string& filename);
     void buildGrid();
     void clearContainers() { containers.clear(); }
-    int getContainerCount() const;
-
+    int getContainerCount() { return containers.size(); } // returns number of containers in manifest (will be used for log)
+    Container getCurrContainer(int index) { return containers[index]; } // returns container at specified index
     vector<pair<int,int>> movable_boxes();
     vector<vector<int>> grid_to_vector() const;
+    vector<vector<Container>> get() const;
     void writeManifestToFile(const string& filename, const vector<vector<int>>& updatedLocations, const vector<string>& solutionSteps) ; // writes the current manifest to a file
 };
+vector<vector<Container>> Manifest::get() const {
+    vector<vector<Container>> gridState;
+
+    for(int i = 0; i < 8; i++) {
+        vector<Container> row;
+        for(int j = 0; j < 12; j++) {
+            if (grid[i][j] != nullptr) {
+                row.push_back(*grid[i][j]);
+            } else {
+                Container emptyBox;
+                emptyBox.x = i;
+                emptyBox.y = j;
+                emptyBox.weight = 0;
+                emptyBox.description = "UNUSED";
+                emptyBox.isEmpty = true;
+                emptyBox.isIllegal = false;
+                row.push_back(emptyBox);
+            }
+        }
+        gridState.push_back(row);
+    }
+    return gridState;
+}
 
 void Manifest::loadManifest(const string& filename) {                       //getting the data from the manifest file
     ifstream inFS(filename);

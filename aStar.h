@@ -24,8 +24,8 @@ public:
         int solutionDepthMinutes = 0;
     };
 
+    vector<Node*> getSolutionPath(Node* goal); //Reconstructs solution path from goal node back to start
     Node* search(Tree* tree, Problem* problem, SearchStats& stats);  //Main A* Search function
-    vector<string> getSolutionPath(Node* goal); //Reconstructs solution path from goal node back to start
     vector<pair<vector<vector<int>>, int>> generate_successors(const Problem& prob, const vector<vector<int>>& state);
 };
 
@@ -94,7 +94,7 @@ Node* aStar::search(Tree* tree, Problem* problem, SearchStats& stats) {
 
         for (int i = 0; i < acts.size(); i++) {
             pair<pair<int,int>, pair<int,int>> action = acts[i]; //Each action is a pair of coords
-            vector<vector<int>> newState = problem->result(current->state, action); //Generate new state after applying this action
+            vector<vector<Container>> newState = problem->result(current->state, action); //Generate new state after applying this action
 
             int step_cost = problem->path_length(current->state, action.first, action.second);
             
@@ -141,12 +141,12 @@ Node* aStar::search(Tree* tree, Problem* problem, SearchStats& stats) {
     return bestNode;
 }
 
-vector<string> aStar::getSolutionPath(Node* goal) { //Returns sequence of actions from start node to the goal state
-    vector<string> steps;
+vector<Node*> aStar::getSolutionPath(Node* goal) { //Returns sequence of actions from start node to the goal state
+    vector<Node*> steps;
     Node* currNode = goal; //Starts from the goal
 
     while (currNode != nullptr && currNode->parent != nullptr) { //Traverse from goal node back to the root node
-        steps.push_back(currNode->action);
+        steps.push_back(currNode);
         currNode = currNode->parent;
     }
 
