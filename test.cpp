@@ -524,26 +524,6 @@ int main() {
                     cin.ignore();
                 }
             }
-
-            // removes color for log entry
-            // string logEntry = steps[i]->action;
-            // size_t pos = 0;
-            // while ((pos = logEntry.find("\x1b[32m", pos)) != string::npos) {
-            //     logEntry.erase(pos, 5);
-            // }
-            // pos = 0;
-            // while ((pos = logEntry.find("\x1b[31m", pos)) != string::npos) {
-            //     logEntry.erase(pos, 5);
-            // }
-            // pos = 0;
-            // while ((pos = logEntry.find("\x1b[0m", pos)) != string::npos) {
-            //     logEntry.erase(pos, 4);
-            // }
-            // //grab start coords and destination coords for log
-            // string startCoords = logEntry.substr(logEntry.find("[") , logEntry.find("]") - logEntry.find("[") + 1);;
-            // string endCoords = logEntry.substr(logEntry.rfind("[") , logEntry.rfind("]") - logEntry.rfind("[") + 1);;
-
-            
         }
 
         // write updated manifest to file
